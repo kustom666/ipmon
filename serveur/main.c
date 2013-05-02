@@ -24,16 +24,17 @@ int main (int argc, char **argv)
 
 	do
 	{
-		//pokeheader head = serialize_header(test_head);
-		int n = recvfrom(sock,buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize);
+		int n = recvfrom(sock,(char *) &recv_head, sizeof recv_head, 0, (SOCKADDR *)&from, &fromsize);
 		if ( n  < 0)
 		{
 			perror("Errreur de réception");
 			exit(1);
 		}
-		recv_head = serialize_header(buffer);
+		
+		printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
 	
 	}while(strcmp("DISCONNECT",buffer) != 0);
+
 
 	return 0;
 

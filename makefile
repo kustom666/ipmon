@@ -7,8 +7,8 @@ all: serveur client server_tester
 serveur: main_server.o network.o utility.o pokeheader.o 
 	$(CC) -o ipmon_serveur serveur/main_server.o core/network.o core/utility.o core/pokeheader.o  $(LDFLAGS)
 
-server_tester: server_tester.o network.o
-	$(CC) -o unittest server_tester/server_tester.o core/network.o $(LDFLAGS)
+server_tester: server_tester.o network.o pokeheader.o utility.o
+	$(CC) -o unittest server_tester/server_tester.o core/network.o core/pokeheader.o core/utility.o $(LDFLAGS)
 
 main_server.o: serveur/main.c 
 	$(CC) -o serveur/main_server.o -c serveur/main.c $(CFLAGS)

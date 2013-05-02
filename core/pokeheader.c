@@ -1,6 +1,6 @@
 #include "pokeheader.h"
 
-pokeheader serialize_header(char *instream)
+pokeheader unserialize_header(char *instream)
 {
 
 	char bufftype[4];
@@ -9,12 +9,19 @@ pokeheader serialize_header(char *instream)
 	uint8_t buffid =  instream[4];
 	uint8_t buffdatal = instream[5];
 
-	pokeheader buff_header = pokealloc(bufftype, buffid, buffdatal);
+	pokeheader buff_header = poke_headeralloc(bufftype, buffid, buffdatal);
 	return buff_header;
 
 }
 
-pokeheader pokealloc(char *packet_type, uint8_t id, uint8_t data_length)
+char serialize_header(pokeheader header, char *serialized)
+{
+	range_strcpy(serialized, header.type, 0, 3);
+	serialized[4] = header.id;
+	serialized[5] = header.data_size;
+}
+
+pokeheader poke_headeralloc(char *packet_type, uint8_t id, uint8_t data_length)
 {
 	pokeheader buff_header = (pokeheader) { packet_type, id, data_length};
 	return buff_header;
