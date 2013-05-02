@@ -1,0 +1,7 @@
+*.o
+client/*.o
+server/*.o
+core/*.o
+
+ipmon_serveur
+ipmon_client
