@@ -1,19 +1,23 @@
+CC=gcc
+CFLAGS=-pedantic -std=c99
+LDFLAGS=
+
 all: serveur client
 
 serveur: main_server.o network.o utility.o pokeheader.o 
-	gcc -o ipmon_serveur serveur/main_server.o core/network.o core/utility.o core/pokeheader.o 
+	$(CC) -o ipmon_serveur serveur/main_server.o core/network.o core/utility.o core/pokeheader.o  $(LDFLAGS)
 
 main_server.o: serveur/main.c 
-	gcc -o serveur/main_server.o -c serveur/main.c
+	$(CC) -o serveur/main_server.o -c serveur/main.c $(CFLAGS)
 
 network.o: core/network.c core/network.h
-	gcc -o core/network.o -c core/network.c
+	$(CC) -o core/network.o -c core/network.c $(CFLAGS)
 
 utility.o: core/utility.c core/utility.h
-	gcc -o core/utility.o -c core/utility.c
+	$(CC) -o core/utility.o -c core/utility.c $(CFLAGS)
 
 pokeheader.o: core/pokeheader.c core/pokeheader.h
-	gcc -o core/pokeheader.o -c core/pokeheader.c
+	$(CC) -o core/pokeheader.o -c core/pokeheader.c $(CFLAGS)
 
 
 

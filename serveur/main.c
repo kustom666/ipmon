@@ -17,19 +17,22 @@ int main (int argc, char **argv)
 	char buffer[1024];
 	struct hostent *host_info = NULL;
 	SOCKADDR_IN from = {0};
-	int fromsize = sizeof from;
+	socklen_t fromsize = sizeof from;
+	char test_head[6] = "DATAXX";
+	pokeheader recv_head;
+	pokepacket recv_pack;
 
 	do
 	{
-		
+		//pokeheader head = serialize_header(test_head);
 		int n = recvfrom(sock,buffer, sizeof buffer - 1, 0, (SOCKADDR *)&from, &fromsize);
 		if ( n  < 0)
 		{
 			perror("Errreur de réception");
 			exit(1);
 		}
+		recv_head = serialize_header(buffer);
 	
-		printf("Buffer : %s", buffer);
 	}while(strcmp("DISCONNECT",buffer) != 0);
 
 	return 0;
