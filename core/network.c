@@ -21,3 +21,23 @@ SOCKADDR_IN setup_addr()
 
 	return in;
 }
+
+SOCKADDR_IN setup_send_addr()
+{
+	SOCKADDR_IN to = {0};
+	const char *hostname = "localhost";
+	struct hostent *hostinfo = NULL;
+	hostinfo = gethostbyname(hostname);
+
+	if(hostinfo == NULL)
+	{
+		fprintf(stderr, "Unknown host %s\n", hostname);
+		exit(1);
+	}
+
+	to.sin_addr = *(IN_ADDR *) hostinfo->h_addr;
+	to.sin_port = htons(l_port);
+	to.sin_family = AF_INET;
+
+	return to;
+}

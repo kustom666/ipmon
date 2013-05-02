@@ -2,6 +2,8 @@
 client/*.o
 server/*.o
 core/*.o
+server_tester/*.o
 
+unittest
 ipmon_serveur
 ipmon_client

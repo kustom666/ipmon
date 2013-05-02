@@ -2,10 +2,13 @@ CC=gcc
 CFLAGS=-pedantic -std=c99
 LDFLAGS=
 
-all: serveur client
+all: serveur client server_tester
 
 serveur: main_server.o network.o utility.o pokeheader.o 
 	$(CC) -o ipmon_serveur serveur/main_server.o core/network.o core/utility.o core/pokeheader.o  $(LDFLAGS)
+
+server_tester: server_tester.o network.o
+	$(CC) -o unittest server_tester/server_tester.o core/network.o $(LDFLAGS)
 
 main_server.o: serveur/main.c 
 	$(CC) -o serveur/main_server.o -c serveur/main.c $(CFLAGS)
@@ -19,6 +22,7 @@ utility.o: core/utility.c core/utility.h
 pokeheader.o: core/pokeheader.c core/pokeheader.h
 	$(CC) -o core/pokeheader.o -c core/pokeheader.c $(CFLAGS)
 
-
+server_tester.o: server_tester/main.c 
+	$(CC) -o server_tester/server_tester.o -c server_tester/main.c $(CFLAGS)
 
 
