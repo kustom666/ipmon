@@ -24,11 +24,12 @@ int main(int arcg, char **argv)
 		scanf("%d", &buffer_id);
 		scanf("%d", &data_t);
 		pokeheader buff_head = poke_headeralloc(buffer_type, buffer_id, data_t);
+		printf("")
+		char * instream = (char*) malloc(6*sizeof(char))
+		serialize_header(buff_head);
+		printf("Sending : %s\n", serialized);
 
-		unsigned char buffer[sizeof(buff_head)];
-		memcpy(&buffer, &buff_head, sizeof(buff_head));
-
-		status = sendto(sock, buffer, sizeof(buffer), 0, (SOCKADDR *)&to, to_size);
+		status = sendto(sock, &serialized, sizeof(serialized), 0, (SOCKADDR *)&to, to_size);
 		if(status < 0)
 		{
 			fprintf(stderr, "Erreur lors de l'initialisation de l'envoi du packet");

@@ -5,7 +5,6 @@ pokeheader unserialize_header(char *instream)
 
 	char bufftype[4];
 	range_strcpy(bufftype, instream, 0,3);
-	printf("Header type serialisé : %s \n", bufftype);
 	uint8_t buffid =  instream[4];
 	uint8_t buffdatal = instream[5];
 
@@ -14,11 +13,15 @@ pokeheader unserialize_header(char *instream)
 
 }
 
-char serialize_header(pokeheader header, char *serialized)
+void serialize_header(pokeheader header, char **instream)
 {
-	range_strcpy(serialized, header.type, 0, 3);
-	serialized[4] = header.id;
-	serialized[5] = header.data_size;
+
+	range_strcpy(instream, header.type, 0, 3);
+
+	instream[4] = header.id;
+	instream[5] = header.data_size;
+
+	printf("Serialisé : %s\n", instream);
 }
 
 pokeheader poke_headeralloc(char *packet_type, uint8_t id, uint8_t data_length)

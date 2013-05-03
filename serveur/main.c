@@ -24,14 +24,15 @@ int main (int argc, char **argv)
 
 	do
 	{
-		int n = recvfrom(sock,(char *) &recv_head, sizeof recv_head, 0, (SOCKADDR *)&from, &fromsize);
+
+		int n = recvfrom(sock, &buffer, sizeof buffer, 0, (SOCKADDR *)&from, &fromsize);
 		if ( n  < 0)
 		{
 			perror("Errreur de réception");
 			exit(1);
 		}
-		
-		printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
+		printf("%s\n", buffer);
+		//printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
 	
 	}while(strcmp("DISCONNECT",buffer) != 0);
 
