@@ -1,7 +1,7 @@
 #include <string.h>
-#include "../core/network.h"
-#include "../core/pokeheader.h"
-#include "../core/pokepacket.h"
+#include "../Core/network.h"
+#include "../Core/pokeheader.h"
+#include "../Core/pokepacket.h"
 
 int main (int argc, char **argv)
 {

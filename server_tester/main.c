@@ -1,7 +1,7 @@
 #include <string.h>
-#include "../core/network.h"
-#include "../core/pokeheader.h"
-#include "../core/pokepacket.h"
+#include "../Core/network.h"
+#include "../Core/pokeheader.h"
+#include "../Core/pokepacket.h"
 
 int main(int arcg, char **argv)
 {	
@@ -24,8 +24,7 @@ int main(int arcg, char **argv)
 		scanf("%d", &buffer_id);
 		scanf("%d", &data_t);
 		pokeheader buff_head = poke_headeralloc(buffer_type, buffer_id, data_t);
-		printf("")
-		char * instream = (char*) malloc(6*sizeof(char))
+		char * instream = (char*) malloc(6*sizeof(char));
 		serialize_header(buff_head);
 		printf("Sending : %s\n", serialized);
 
