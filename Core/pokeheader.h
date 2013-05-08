@@ -8,7 +8,7 @@
 #include "utility.h"
 
 typedef struct pokeheader{
-	char type[4];
+	uint32_t type;
 	uint8_t id;
 	uint8_t data_size;
 }pokeheader;
@@ -17,8 +17,6 @@ typedef struct pokeheader{
 pokeheader unserialize_header(char *instream);
 pokeheader poke_headeralloc(char *bufftype, uint8_t id, uint8_t data_length);
 void serialize_header(pokeheader header, char **instream);
-unsigned char * serialize_uint32(unsigned char *buffer, uint32_t value);
-unsigned char * serialize_uint8(unsigned char *buffer, uint8_t value);
-uint32_t unserialize_uint32(unsigned char *buffer);
+
 
 #endif
