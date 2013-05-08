@@ -3,6 +3,15 @@ client/*.o
 server/*.o
 core/*.o
 server_tester/*.o
+server_tester/.deps
+server_tester/.deps/*
+serveur/.deps
+serveur/.deps/*
+core/.deps
+core/.deps/*
+client/.deps
+client/.deps/*
+
 autom4te.cache
 autom4te.cache/*
 
