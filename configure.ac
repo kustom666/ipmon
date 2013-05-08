@@ -6,6 +6,7 @@ AC_INIT(IPmon, 0.0.1, paul@bytechain.com)
 AM_INIT_AUTOMAKE(IPmon, 0.0.1)
 # Checks for programs.
 AC_PROG_CC
+AC_PROG_CC_STDC
 
 # Checks for libraries.
 

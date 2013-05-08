@@ -13,7 +13,7 @@ int main(int arcg, char **argv)
 
 	int cont = 0;
 
-	do
+	/*do
 	{
 		char buffer_type[4];
 		uint8_t buffer_id;
@@ -24,18 +24,27 @@ int main(int arcg, char **argv)
 		scanf("%d", &buffer_id);
 		scanf("%d", &data_t);
 		pokeheader buff_head = poke_headeralloc(buffer_type, buffer_id, data_t);
-		char * instream = (char*) malloc(6*sizeof(char));
-		serialize_header(buff_head);
-		printf("Sending : %s\n", serialized);
-
-		status = sendto(sock, &serialized, sizeof(serialized), 0, (SOCKADDR *)&to, to_size);
+		char * instream = (char *)malloc(6*sizeof(char));
+		
+		printf("Sending : %s\n", instream);
+		serialize_header(buff_head, &instream);
+		status = sendto(sock, instream, sizeof(*instream), 0, (SOCKADDR *)&to, to_size);
 		if(status < 0)
 		{
 			fprintf(stderr, "Erreur lors de l'initialisation de l'envoi du packet");
 			exit(1);
 		}
 
-	}while(cont == 0);
+	}while(cont == 0);*/
+
+	unsigned char buffer[4] = "DATA";
+	unsigned char *getbuff;
+	unsigned char *tot = (unsigned char*) malloc(4 * sizeof(unsigned char));
+	uint32_t test = unserialize_uint32(buffer);
+	tot = serialize_uint32(tot, test);
+	//getbuff = serialize_uint32(buffer, test);
+	printf("test : %d \n", test);
+	printf("getbuff : %s \n", tot);
 
 	return 0;
 }
