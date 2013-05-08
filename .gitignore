@@ -3,6 +3,8 @@ client/*.o
 server/*.o
 core/*.o
 server_tester/*.o
+autom4te.cache
+autom4te.cache/*
 
 unittest
 ipmon_serveur
