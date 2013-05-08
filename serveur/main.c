@@ -2,6 +2,7 @@
 #include "../Core/network.h"
 #include "../Core/pokeheader.h"
 #include "../Core/pokepacket.h"
+#include "../Core/utility.h"
 
 int main (int argc, char **argv)
 {
@@ -31,7 +32,13 @@ int main (int argc, char **argv)
 			perror("Errreur de réception");
 			exit(1);
 		}
-		printf("%s\n", buffer);
+		
+		if(pck_type(buffer) == TAG_LOGI)
+		{
+			printf("New login!\n");
+			pokeheader recv_header = unserialize_header(buffer);
+			//printf("Login from : %s\n", recv_header.type);
+		}
 		//printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
 	
 	}while(strcmp("DISCONNECT",buffer) != 0);

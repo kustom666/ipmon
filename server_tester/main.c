@@ -37,14 +37,13 @@ int main(int arcg, char **argv)
 
 	}while(cont == 0);*/
 
-	unsigned char buffer[4] = "DATA";
-	unsigned char *getbuff;
-	unsigned char *tot = (unsigned char*) malloc(4 * sizeof(unsigned char));
-	uint32_t test = unserialize_uint32(buffer);
-	tot = serialize_uint32(tot, test);
-	//getbuff = serialize_uint32(buffer, test);
-	printf("test : %d \n", test);
-	printf("getbuff : %s \n", tot);
+	unsigned char bu[4] = "DATA";
+	uint32_t test = unserialize_uint32(TAG_LOGI);
+	pokeheader header = {test, inet_addr("127.0.0.1"), 1, 12};
+	unsigned char buffer[10], *ptr;
+	ptr = serialize_header(&header, buffer);
+
+	send_pokeheader(sock, (SOCKADDR *)&to, to_size, &header);
 
 	return 0;
 }

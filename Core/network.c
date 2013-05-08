@@ -41,3 +41,11 @@ SOCKADDR_IN setup_send_addr()
 
 	return to;
 }
+
+int send_pokeheader(SOCKET socket, const SOCKADDR *dest, socklen_t dlen, pokeheader *header)
+{
+	unsigned char buffer[10], *buff;
+
+	buff = serialize_header(header, buffer);
+	return sendto(socket,buff, sizeof(buff), 0, dest, dlen) == sizeof(buff);
+}

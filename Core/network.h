@@ -12,6 +12,8 @@
 #include <unistd.h> 
 #include <netdb.h> 
 
+#include "pokeheader.h"
+#include "utility.h"
 // DEFINE du port et de la compatibilité ascendante de h_addr
 #define l_port 1151
 #define h_addr  h_addr_list[0]
@@ -27,5 +29,6 @@ typedef struct in_addr IN_ADDR;
 SOCKET setup_socket();
 SOCKADDR_IN setup_addr();
 SOCKADDR_IN setup_send_addr();
+int send_pokeheader(SOCKET socket, const SOCKADDR *dest, socklen_t dlen, pokeheader *header);
 
 #endif
