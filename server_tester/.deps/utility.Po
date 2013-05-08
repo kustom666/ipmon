@@ -1,5 +1,0 @@
-utility.o: ../Core/utility.c /usr/include/stdc-predef.h ../Core/utility.h
-
-/usr/include/stdc-predef.h:
-
-../Core/utility.h:
