@@ -10,7 +10,7 @@ void range_strcpy(char *s1, const char *s2, int rb, int re)
 	}
 }
 
-unsigned char * serialize_uint32(unsigned char *buffer, uint32_t value)
+ char * serialize_uint32( char *buffer, uint32_t value)
 {
   buffer[0] = value >> 24;
   buffer[1] = value >> 16;
@@ -19,19 +19,19 @@ unsigned char * serialize_uint32(unsigned char *buffer, uint32_t value)
   return buffer;
 }
 
-unsigned char * serialize_uint8(unsigned char *buffer, uint8_t value)
+ char * serialize_uint8( char *buffer, uint8_t value)
 {
   buffer[0] = value;
   return buffer;
 }
 
-uint8_t unserialize_uint8(unsigned char *buffer)
+uint8_t unserialize_uint8( char *buffer)
 {
 	uint8_t value = buffer[0];
 	return value;
 }
 
-uint32_t unserialize_uint32(unsigned char *buffer)
+uint32_t unserialize_uint32( char *buffer)
 {
 	uint32_t value = 0;
 	value |= buffer[0] << 24;

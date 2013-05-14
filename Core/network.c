@@ -4,7 +4,7 @@ SOCKET setup_socket()
 {
 	SOCKET sock =  socket(AF_INET, SOCK_DGRAM,0); // Création du socket sur protocole UDP
 
-	if(sock == -1) // Vérification que le socket est bien initialisé
+	if(sock == INVALID_SOCKET) // Vérification que le socket est bien winsock_initialisé
 	{
 		perror("Erreur lors de la création du socket");
 		exit(1);
@@ -42,10 +42,30 @@ SOCKADDR_IN setup_send_addr()
 	return to;
 }
 
-int send_pokeheader(SOCKET socket, const SOCKADDR *dest, socklen_t dlen, pokeheader *header)
+int send_pokeheader(SOCKET socket, const SOCKADDR *dest, int dlen, pokeheader *header)
 {
-	unsigned char buffer[10], *buff;
+	 char buffer[10], *buff;
 
 	buff = serialize_header(header, buffer);
 	return sendto(socket,buff, sizeof(buff), 0, dest, dlen) == sizeof(buff);
+}
+
+void winsock_init()
+{
+	#ifdef WIN32
+		WSADATA wsa;
+		int err = WSAStartup(MAKEWORD(2, 2), &wsa);
+		if(err < 0)
+		{
+			puts("WSAStartup failed !");
+			exit(EXIT_FAILURE);
+		}
+	#endif
+	}
+
+void winsock_end()
+{
+	#ifdef WIN32
+		WSACleanup();
+	#endif
 }

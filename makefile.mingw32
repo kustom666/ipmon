@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-pedantic -std=c99
-LDFLAGS=
+LDFLAGS=-lws2_32
 
 all: serveur client server_tester
 

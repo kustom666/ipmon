@@ -5,7 +5,7 @@
 
 int main(int arcg, char **argv)
 {	
-
+	winsock_init();
 	SOCKET sock = setup_socket();
 	SOCKADDR_IN to = setup_send_addr();
 	int to_size = sizeof(to);
@@ -31,19 +31,19 @@ int main(int arcg, char **argv)
 		status = sendto(sock, instream, sizeof(*instream), 0, (SOCKADDR *)&to, to_size);
 		if(status < 0)
 		{
-			fprintf(stderr, "Erreur lors de l'initialisation de l'envoi du packet");
+			fprintf(stderr, "Erreur lors de l'winsock_initialisation de l'envoi du packet");
 			exit(1);
 		}
 
 	}while(cont == 0);*/
-
-	unsigned char bu[4] = "DATA";
-	uint32_t test = unserialize_uint32(TAG_LOGI);
-	pokeheader header = {test, inet_addr("127.0.0.1"), 1, 12};
-	unsigned char buffer[10], *ptr;
+	uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
+	pokeheader header = {test, 1, 12};
+	 char buffer[10], *ptr;
 	ptr = serialize_header(&header, buffer);
 
 	send_pokeheader(sock, (SOCKADDR *)&to, to_size, &header);
+
+	winsock_end();
 
 	return 0;
 }
