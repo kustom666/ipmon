@@ -19,15 +19,15 @@ void range_strcpy(char *s1, const char *s2, int rb, int re)
   return buffer;
 }
 
- char * serialize_uint8( char *buffer, uint8_t value)
+char serialize_uint8(char buffer, uint8_t value)
 {
-  buffer[0] = value;
+  buffer = value;
   return buffer;
 }
 
-uint8_t unserialize_uint8( char *buffer)
+uint8_t unserialize_uint8(char buffer)
 {
-	uint8_t value = buffer[0];
+	uint8_t value = buffer;
 	return value;
 }
 

@@ -44,11 +44,14 @@ SOCKADDR_IN setup_send_addr()
 
 int send_pokeheader(SOCKET socket, const SOCKADDR *dest, int dlen, pokeheader *header)
 {
-	 char buffer[10], *buff;
+	char *buff;
 
-	buff = serialize_header(header, buffer);
-	return sendto(socket,buff, sizeof(buff), 0, dest, dlen) == sizeof(buff);
+	buff = serialize_header(header);
+	int nb = sendto(socket,buff, 6, 0, dest, dlen); // Impossible d'utiliser sizeof, puisque buff est un pointeur, donc sizeof retourne la taille du pointeur
+	return 0;
 }
+
+
 
 void winsock_init()
 {

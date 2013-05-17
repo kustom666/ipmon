@@ -37,11 +37,18 @@ int main(int arcg, char **argv)
 
 	}while(cont == 0);*/
 	uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
-	pokeheader header = {test, 1, 12};
-	 char buffer[10], *ptr;
-	ptr = serialize_header(&header, buffer);
+	pokeheader header = {test, 1, 5};
+	printf("Pre Serialisation : %d, %d, %d\n", header.type, header.id, header.data_size);
+	char *data = "PAUL";
 
-	send_pokeheader(sock, (SOCKADDR *)&to, to_size, &header);
+	char buffer[10], *ptr, *ptb;
+	ptr = serialize_header(&header);
+
+	char * append = forge_packet(ptr, data, 6, 5);
+	printf("appended %s -  %s \n", data, append);
+
+	//send_pokepacket();
+	sendto(sock ,append, 11, 0, (SOCKADDR *)&to, to_size); 
 
 	winsock_end();
 

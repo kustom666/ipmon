@@ -20,14 +20,13 @@ int main (int argc, char **argv)
 	struct hostent *host_info = NULL;
 	SOCKADDR_IN from = {0};
 	int fromsize = sizeof from;
-	char test_head[6] = "DATAXX";
 	pokeheader recv_head;
 	pokepacket recv_pack;
 
 	do
 	{
 
-		int n = recvfrom(sock, buffer, sizeof buffer, 0, (SOCKADDR *)&from, &fromsize);
+		int n = recvfrom(sock, buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 		if ( n  < 0)
 		{
 			perror("Errreur de réception");
@@ -36,9 +35,11 @@ int main (int argc, char **argv)
 		
 		if(strcmp(pck_type(buffer), TAG_LOGI) == 0)
 		{
+			printf("RECV : %d\n", n);
 			printf("New login!\n");
 			pokeheader recv_header = unserialize_header(buffer);
-			//printf("Login from : %s\n", recv_header.type);
+			printf("Type : %d\n ID : %d\nTaille données : %d \n",recv_header.type,recv_header.id, recv_header.data_size );
+		
 		}
 		else
 		{

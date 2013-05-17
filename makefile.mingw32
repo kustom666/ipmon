@@ -4,23 +4,26 @@ LDFLAGS=-lws2_32
 
 all: serveur client server_tester
 
-serveur: main_server.o network.o utility.o pokeheader.o 
-	$(CC) -o ipmon_serveur serveur/main_server.o core/network.o core/utility.o core/pokeheader.o  $(LDFLAGS)
+serveur: main_server.o network.o utility.o pokeheader.o pokepacket.o
+	$(CC) -o ipmon_serveur serveur/main_server.o Core/network.o Core/utility.o Core/pokeheader.o Core/pokepacket.o $(LDFLAGS)
 
-server_tester: server_tester.o network.o pokeheader.o utility.o
-	$(CC) -o unittest server_tester/server_tester.o core/network.o core/pokeheader.o core/utility.o $(LDFLAGS)
+server_tester: server_tester.o network.o pokeheader.o utility.o pokepacket.o
+	$(CC) -o unittest server_tester/server_tester.o Core/network.o Core/pokeheader.o Core/utility.o Core/pokepacket.o $(LDFLAGS)
 
 main_server.o: serveur/main.c 
 	$(CC) -o serveur/main_server.o -c serveur/main.c $(CFLAGS)
 
-network.o: core/network.c core/network.h
-	$(CC) -o core/network.o -c core/network.c $(CFLAGS)
+network.o: Core/network.c Core/network.h
+	$(CC) -o Core/network.o -c Core/network.c $(CFLAGS)
 
-utility.o: core/utility.c core/utility.h
-	$(CC) -o core/utility.o -c core/utility.c $(CFLAGS)
+utility.o: Core/utility.c Core/utility.h
+	$(CC) -o Core/utility.o -c Core/utility.c $(CFLAGS)
 
-pokeheader.o: core/pokeheader.c core/pokeheader.h
-	$(CC) -o core/pokeheader.o -c core/pokeheader.c $(CFLAGS)
+pokeheader.o: Core/pokeheader.c Core/pokeheader.h
+	$(CC) -o Core/pokeheader.o -c Core/pokeheader.c $(CFLAGS)
+
+pokepacket.o: Core/pokepacket.c Core/pokepacket.h
+	$(CC) -o Core/pokepacket.o -c Core/pokepacket.c $(CFLAGS)
 
 server_tester.o: server_tester/main.c 
 	$(CC) -o server_tester/server_tester.o -c server_tester/main.c $(CFLAGS)
