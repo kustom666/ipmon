@@ -20,12 +20,15 @@ int main (int argc, char **argv)
 	struct hostent *host_info = NULL;
 	SOCKADDR_IN from = {0};
 	int fromsize = sizeof from;
-	pokeheader recv_head;
-	pokepacket recv_pack;
-
+/*#define TAG_DATA "DATA"
+#define TAG_NOUV "NOUV"
+#define TAG_DONE "DONE"
+#define TAG_DINI "DINI"
+#define TAG_DACK "DACK"
+#define TAG_ATCK "ATCK"
+#define TAG_ISSU "ISSU"*/
 	do
 	{
-
 		int n = recvfrom(sock, buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 		if ( n  < 0)
 		{
@@ -35,11 +38,25 @@ int main (int argc, char **argv)
 		
 		if(strcmp(pck_type(buffer), TAG_LOGI) == 0)
 		{
-			printf("RECV : %d\n", n);
-			printf("New login!\n");
-			pokeheader recv_header = unserialize_header(buffer);
-			printf("Type : %d\n ID : %d\nTaille données : %d \n",recv_header.type,recv_header.id, recv_header.data_size );
-		
+			printf("Nouveau login!\n");
+			printf("Recu : %s\n", buffer);
+			pokepacket recv_pack = unserialize_pokepacket(buffer);
+			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
+			sendto(sock ,"YO", 2, 0, (SOCKADDR *)&from, sizeof(from)); 
+		}
+		else if(strcmp(pck_type(buffer), TAG_NOUV) == 0)
+		{
+			printf("Nouveau joueur!\n");
+			printf("Recu : %s\n", buffer);
+			pokepacket recv_pack = unserialize_pokepacket(buffer);
+			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
+		}
+		else if(strcmp(pck_type(buffer), TAG_DINI) == 0)
+		{
+			printf("C'est l'heure du dudududududuel!\n");
+			printf("Recu : %s\n", buffer);
+			pokepacket recv_pack = unserialize_pokepacket(buffer);
+			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
 		}
 		else
 		{
@@ -47,7 +64,7 @@ int main (int argc, char **argv)
 		}
 		//printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
 	
-	}while(strcmp("DISCONNECT",buffer) != 0);
+	}while(1==1);
 
 	winsock_end();
 	return 0;

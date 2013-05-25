@@ -31,7 +31,7 @@ SOCKADDR_IN setup_send_addr(const char *hostname)
 
 	if(hostinfo == NULL)
 	{
-		fprintf(stderr, "Unknown host %s\n", hostname);
+		fprintf(stderr, "Host inconnu : %s\n", hostname);
 		exit(1);
 	}
 
