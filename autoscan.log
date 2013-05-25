@@ -1,0 +1,9 @@
+autoscan: warning: missing AC_TYPE_UINT32_T wanted by: 
+	server_tester/main.c:39
+	Core/utility.h:18
+	Core/utility.h:20
+	Core/pokeheader.h:11
+	Core/pokeheader.c:7
+	Core/utility.c:13
+	Core/utility.c:34
+	Core/utility.c:36

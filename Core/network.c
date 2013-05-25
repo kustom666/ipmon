@@ -22,10 +22,10 @@ SOCKADDR_IN setup_addr()
 	return in;
 }
 
-SOCKADDR_IN setup_send_addr()
+SOCKADDR_IN setup_send_addr(const char *hostname)
 {
 	SOCKADDR_IN to = {0};
-	const char *hostname = "localhost";
+	//const char *hostname = "192.168.1.73";
 	struct hostent *hostinfo = NULL;
 	hostinfo = gethostbyname(hostname);
 

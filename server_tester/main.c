@@ -6,8 +6,12 @@
 int main(int arcg, char **argv)
 {	
 	winsock_init();
+	char addr[64];
+	printf("Se connecter à quel serveur?\n");
+	scanf("%s", addr);
+	printf("Connection au serveur %s", addr);
 	SOCKET sock = setup_socket();
-	SOCKADDR_IN to = setup_send_addr();
+	SOCKADDR_IN to = setup_send_addr(addr);
 	int to_size = sizeof(to);
 	int status;
 
