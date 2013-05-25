@@ -62,7 +62,7 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_serveur_OBJECTS = main.$(OBJEXT) network.$(OBJEXT) \
-	pokeheader.$(OBJEXT) utility.$(OBJEXT)
+	pokepacket.$(OBJEXT) pokeheader.$(OBJEXT) utility.$(OBJEXT)
 serveur_OBJECTS = $(am_serveur_OBJECTS)
 serveur_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -212,7 +212,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CCFLAGS = $(INIT_CFLAGS)
-serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h
+serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.c ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h
 serveur_LDADD = $(INIT_LIBS)
 all: all-am
 
@@ -303,6 +303,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokeheader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokepacket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Po@am__quote@
 
 .c.o:
@@ -332,6 +333,20 @@ network.obj: ../Core/network.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/network.c' object='network.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o network.obj `if test -f '../Core/network.c'; then $(CYGPATH_W) '../Core/network.c'; else $(CYGPATH_W) '$(srcdir)/../Core/network.c'; fi`
+
+pokepacket.o: ../Core/pokepacket.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pokepacket.o -MD -MP -MF $(DEPDIR)/pokepacket.Tpo -c -o pokepacket.o `test -f '../Core/pokepacket.c' || echo '$(srcdir)/'`../Core/pokepacket.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pokepacket.Tpo $(DEPDIR)/pokepacket.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/pokepacket.c' object='pokepacket.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pokepacket.o `test -f '../Core/pokepacket.c' || echo '$(srcdir)/'`../Core/pokepacket.c
+
+pokepacket.obj: ../Core/pokepacket.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pokepacket.obj -MD -MP -MF $(DEPDIR)/pokepacket.Tpo -c -o pokepacket.obj `if test -f '../Core/pokepacket.c'; then $(CYGPATH_W) '../Core/pokepacket.c'; else $(CYGPATH_W) '$(srcdir)/../Core/pokepacket.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pokepacket.Tpo $(DEPDIR)/pokepacket.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/pokepacket.c' object='pokepacket.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pokepacket.obj `if test -f '../Core/pokepacket.c'; then $(CYGPATH_W) '../Core/pokepacket.c'; else $(CYGPATH_W) '$(srcdir)/../Core/pokepacket.c'; fi`
 
 pokeheader.o: ../Core/pokeheader.c
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pokeheader.o -MD -MP -MF $(DEPDIR)/pokeheader.Tpo -c -o pokeheader.o `test -f '../Core/pokeheader.c' || echo '$(srcdir)/'`../Core/pokeheader.c

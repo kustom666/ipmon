@@ -9,50 +9,26 @@ int main(int arcg, char **argv)
 	char addr[64];
 	printf("Se connecter à quel serveur?\n");
 	scanf("%s", addr);
-	printf("Connection au serveur %s", addr);
+	printf("Connection au serveur %s\n", addr);
 	SOCKET sock = setup_socket();
 	SOCKADDR_IN to = setup_send_addr(addr);
 	int to_size = sizeof(to);
 	int status;
+	do{
+		printf("Veuillez entrer votre pseudo : ");
+		char *data = (char *) malloc(64*sizeof(char));
+		scanf("%s", data);
+		uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
+		pokeheader header = {test, 1, strlen(data)};
 
-	int cont = 0;
+		char buffer[10], *ptr;
+		ptr = serialize_header(&header);
 
-	/*do
-	{
-		char buffer_type[4];
-		uint8_t buffer_id;
-		uint8_t data_t;
-		printf("Entrez le type de packet, suivi de l'id et de la taille des données\n");
-		scanf("%s", &buffer_type);
-		//printf("Buffer type : %s\n", buffer_type);
-		scanf("%d", &buffer_id);
-		scanf("%d", &data_t);
-		pokeheader buff_head = poke_headeralloc(buffer_type, buffer_id, data_t);
-		char * instream = (char *)malloc(6*sizeof(char));
-		
-		printf("Sending : %s\n", instream);
-		serialize_header(buff_head, &instream);
-		status = sendto(sock, instream, sizeof(*instream), 0, (SOCKADDR *)&to, to_size);
-		if(status < 0)
-		{
-			fprintf(stderr, "Erreur lors de l'winsock_initialisation de l'envoi du packet");
-			exit(1);
-		}
+		char * append = forge_packet(ptr, data, 6, strlen(data));
 
-	}while(cont == 0);*/
-	uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
-	pokeheader header = {test, 1, 5};
-	printf("Pre Serialisation : %d, %d, %d\n", header.type, header.id, header.data_size);
-	char *data = "PAUL";
-
-	char buffer[10], *ptr, *ptb;
-	ptr = serialize_header(&header);
-
-	char * append = forge_packet(ptr, data, 6, 5);
-	printf("appended %s -  %s \n", data, append);
-
-	//send_pokepacket();
-	sendto(sock ,append, 11, 0, (SOCKADDR *)&to, to_size); 
+		//send_pokepacket();
+		sendto(sock ,append, 6+strlen(data), 0, (SOCKADDR *)&to, to_size); 
+	}while(1==1);
 
 	winsock_end();
 
