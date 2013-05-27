@@ -6,18 +6,19 @@
 int main(int arcg, char **argv)
 {	
 	winsock_init();
-	char addr[64];
+	/*char addr[64];
 	printf("Se connecter à quel serveur?\n");
 	scanf("%s", addr);
-	printf("Connection au serveur %s\n", addr);
+	printf("Connection au serveur %s\n", addr);*/
 	SOCKET sock = setup_socket();
-	SOCKADDR_IN to = setup_send_addr(addr);
+	SOCKADDR_IN to = setup_send_addr("127.0.0.1");
 	int to_size = sizeof(to);
 	int status;
 	do{
-		printf("Veuillez entrer votre pseudo : ");
+		printf("Veuillez entrer votre pseudo : \n");
 		char *data = (char *) malloc(64*sizeof(char));
 		scanf("%s", data);
+		printf("Len data: %d\n", strlen(data));
 		uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
 		pokeheader header = {test, 1, strlen(data)};
 
@@ -25,9 +26,11 @@ int main(int arcg, char **argv)
 		ptr = serialize_header(&header);
 
 		char * append = forge_packet(ptr, data, 6, strlen(data));
+		printf("Envoi de : %s - len : %d\n", append, strlen(append));
 
 		//send_pokepacket();
-		sendto(sock ,append, 6+strlen(data), 0, (SOCKADDR *)&to, to_size); 
+		sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
+
 	}while(1==1);
 
 	winsock_end();

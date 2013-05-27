@@ -19,7 +19,7 @@ pokepacket unserialize_pokepacket(char *data)
 {
 	pokeheader head = unserialize_header(data);
 	int payload_size = head.data_size;
-	char *buff_payload = (char *) malloc(payload_size+1 * sizeof(char));
+	char *buff_payload = (char *) malloc(payload_size * sizeof(char));
 	range_strcpy(buff_payload, data, 6, payload_size+6);
 
 	pokepacket packet = {head, buff_payload};
