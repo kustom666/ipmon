@@ -48,7 +48,7 @@ int main (int argc, char **argv)
 			pokepacket recv_pack = unserialize_pokepacket(buffer);
 
 			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
-			//sendto(sock ,"YO", 2, 0, (SOCKADDR *)&from, sizeof(from)); 
+			sendto(sock ,"YO", 2, 0, (SOCKADDR *)&from, sizeof(from)); 
 			memset(buffer, 0, 1024);
 		}
 		else if(strcmp(pck_type(buffer), TAG_NOUV) == 0)

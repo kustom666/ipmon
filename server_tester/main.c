@@ -6,16 +6,28 @@
 int main(int arcg, char **argv)
 {	
 	winsock_init();
-	/*char addr[64];
+	SOCKADDR_IN listen = setup_addr();
+	
+	char recv_buffer[1024];
+	SOCKADDR_IN from = {0};
+	int fromsize = sizeof from;
+
+	char addr[64];
 	printf("Se connecter à quel serveur?\n");
 	scanf("%s", addr);
-	printf("Connection au serveur %s\n", addr);*/
+	printf("Connection au serveur %s\n", addr);
 	SOCKET sock = setup_socket();
-	SOCKADDR_IN to = setup_send_addr("127.0.0.1");
+	SOCKADDR_IN to = setup_send_addr(addr);
 	int to_size = sizeof(to);
-	int status;
+	
+	if(bind(sock, (SOCKADDR *) &listen, sizeof listen) == SOCKET_ERROR)
+	{
+		perror("Impossible de bind le port");
+		exit(1);
+	}
+
 	do{
-		printf("Veuillez entrer votre pseudo : \n");
+		printf("Veuillez entrer votre pseudo : ");
 		char *data = (char *) malloc(64*sizeof(char));
 		scanf("%s", data);
 		printf("Len data: %d\n", strlen(data));
@@ -30,6 +42,16 @@ int main(int arcg, char **argv)
 
 		//send_pokepacket();
 		sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
+
+		int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+
+		if ( n  < 0)
+		{
+			perror("Errreur de réception");
+			exit(1);
+		}
+
+		printf("Réponse : %s ", recv_buffer);
 
 	}while(1==1);
 
