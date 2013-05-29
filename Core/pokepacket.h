@@ -14,7 +14,6 @@ typedef struct pokepacket{
 }pokepacket;
 
 pokepacket unserialize_pokepacket(char *data);
-char * serialize_pokepacket();
 char * forge_packet(char *origine, char *data, int size_origine, int size_data);
 int send_pokepacket(SOCKET sock, char *type, char *pack_char, int size_pack, SOCKADDR_IN to, int to_size);
 

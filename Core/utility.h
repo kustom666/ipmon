@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 
 #define TAG_LOGI "LOGI"
 #define TAG_DATA "DATA"
@@ -19,6 +20,7 @@ typedef struct joueur{
 	char *ip;
 }joueur;
 
+char *generate_pokemon();
 void range_strcpy(char *s1, const char *s2, int rb, int re);
 char * serialize_uint32( char *buffer, uint32_t value);
 char serialize_uint8( char buffer, uint8_t value);

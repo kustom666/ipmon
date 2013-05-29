@@ -62,7 +62,8 @@ CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_serveur_OBJECTS = main.$(OBJEXT) network.$(OBJEXT) \
-	pokepacket.$(OBJEXT) pokeheader.$(OBJEXT) utility.$(OBJEXT)
+	pokepacket.$(OBJEXT) pokeheader.$(OBJEXT) utility.$(OBJEXT) \
+	generator.$(OBJEXT)
 serveur_OBJECTS = $(am_serveur_OBJECTS)
 serveur_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -212,7 +213,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CCFLAGS = $(INIT_CFLAGS)
-serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.c ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h
+serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.c ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h ../Core/generator.h ../Core/generator.c
 serveur_LDADD = $(INIT_LIBS)
 all: all-am
 
@@ -300,6 +301,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokeheader.Po@am__quote@
@@ -375,6 +377,20 @@ utility.obj: ../Core/utility.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/utility.c' object='utility.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o utility.obj `if test -f '../Core/utility.c'; then $(CYGPATH_W) '../Core/utility.c'; else $(CYGPATH_W) '$(srcdir)/../Core/utility.c'; fi`
+
+generator.o: ../Core/generator.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT generator.o -MD -MP -MF $(DEPDIR)/generator.Tpo -c -o generator.o `test -f '../Core/generator.c' || echo '$(srcdir)/'`../Core/generator.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/generator.Tpo $(DEPDIR)/generator.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/generator.c' object='generator.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o generator.o `test -f '../Core/generator.c' || echo '$(srcdir)/'`../Core/generator.c
+
+generator.obj: ../Core/generator.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT generator.obj -MD -MP -MF $(DEPDIR)/generator.Tpo -c -o generator.obj `if test -f '../Core/generator.c'; then $(CYGPATH_W) '../Core/generator.c'; else $(CYGPATH_W) '$(srcdir)/../Core/generator.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/generator.Tpo $(DEPDIR)/generator.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/generator.c' object='generator.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o generator.obj `if test -f '../Core/generator.c'; then $(CYGPATH_W) '../Core/generator.c'; else $(CYGPATH_W) '$(srcdir)/../Core/generator.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

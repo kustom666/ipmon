@@ -1,5 +1,20 @@
 #include "utility.h"
 
+char * generate_pokemon()
+{
+	char **pkm_specs;
+	srand(time(NULL));
+	for(int i = 0; i< 18; i++){
+		int buffrand = rand()%255;
+		pkm_specs[i] = (char*)malloc(3*sizeof(char));
+		sprintf(pkm_specs[i], "%d", buffrand);
+	}
+
+	char * 
+	free(pkm_specs);
+
+}
+
 void range_strcpy(char *s1, const char *s2, int rb, int re)
 {
 	int j = 0;
