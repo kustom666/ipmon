@@ -31,6 +31,7 @@ int main (int argc, char **argv)
 #define TAG_ISSU "ISSU"*/
 	do
 	{
+		memset(buffer, 0, 1024);
 		int n = recvfrom(sock, buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 
 		if ( n  < 0)
@@ -49,7 +50,6 @@ int main (int argc, char **argv)
 
 			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
 			sendto(sock ,"YO", 2, 0, (SOCKADDR *)&from, sizeof(from)); 
-			memset(buffer, 0, 1024);
 		}
 		else if(strcmp(pck_type(buffer), TAG_NOUV) == 0)
 		{
@@ -70,6 +70,7 @@ int main (int argc, char **argv)
 			printf("Type de packet inconnu :\n%s\n", buffer);
 		}
 		//printf("Data Type : %s - ID : %d - Data_Length : %d\n", recv_head.type, recv_head.id, recv_head.data_size);
+
 	
 	}while(1==1);
 

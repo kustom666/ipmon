@@ -27,6 +27,7 @@ int main(int arcg, char **argv)
 	}
 
 	do{
+		memset(recv_buffer, 0, 1024);
 		printf("Veuillez entrer votre pseudo : ");
 		char *data = (char *) malloc(64*sizeof(char));
 		scanf("%s", data);
