@@ -21,6 +21,7 @@ int main (int argc, char **argv)
 	//Nos structures utilisées pour l'envoi/réception de packets
 	pokeheader head;
 	pokepacket pack;
+	char *buff_send = (char*) malloc(1024*sizeof(char));
 
 	if(bind(sock, (SOCKADDR *) &listen, sizeof listen) == SOCKET_ERROR)
 	{
@@ -31,6 +32,7 @@ int main (int argc, char **argv)
 	do
 	{
 		memset(buffer, 0, 1024);
+		memset(buff_send, 0, 1024);
 
 		int n = recvfrom(sock, buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 
@@ -40,19 +42,15 @@ int main (int argc, char **argv)
 			exit(1);
 		}
 
+		pokepacket recv_pack = unserialize_pokepacket(buffer);
 		char *recv_ip = inet_ntoa(from.sin_addr);
-		nbpack++;
+		printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
 
-		if(strcmp(pck_type(buffer), TAG_LOGI) == 0)
+		if(strcmp(pck_type(buffer), TAG_NOUV) == 0)
 		{
 			printf("Nouveau login depuis : %s\n", recv_ip);
 			printf("Recu : %s\n", buffer);
-			pokepacket recv_pack = unserialize_pokepacket(buffer);
 
-			printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
-
-			char *buff_send = (char*) malloc(1024*sizeof(char));
-			memset(buff_send, 0, 1024);
 			int pck_size = generate_packet(recv_pack.header.id+1, &pack, &head, TAG_DONE, &buff_send);
 
 			if(pck_size == 0)
@@ -63,9 +61,12 @@ int main (int argc, char **argv)
 			{
 				printf("Envoi de : %s\n", buff_send);
 				sendto(sock , buff_send, pck_size, 0, (SOCKADDR *)&from, sizeof(from)); 
-				free(buff_send);
 			}
-
+		}
+		else if(strcmp(pck_type(buffer), TAG_DINI) == 0)
+		{
+			printf("C'est l'heure du dudududududuel!\nEnvoyé depuis : %s\n", recv_ip);
+			
 		}
 		else
 		{
@@ -74,6 +75,7 @@ int main (int argc, char **argv)
 	}while(1==1);
 
 	winsock_end();
+	free(buff_send);
 	return 0;
 
 }

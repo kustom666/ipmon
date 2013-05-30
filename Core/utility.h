@@ -6,21 +6,20 @@
 #include <string.h>
 #include <time.h>
 
-#define TAG_LOGI "LOGI"
-#define TAG_DATA "DATA"
-#define TAG_NOUV "NOUV"
-#define TAG_DONE "DONE"
-#define TAG_DINI "DINI"
-#define TAG_DACK "DACK"
-#define TAG_ATCK "ATCK"
-#define TAG_ISSU "ISSU"
+#define TAG_LOGI "LOGI" //Tag login
+#define TAG_DATA "DATA" //Tag ??
+#define TAG_NOUV "NOUV" //Tag nouveau joueur
+#define TAG_DONE "DONE" //Tag duel fini
+#define TAG_DINI "DINI" //Tag nouveau duel
+#define TAG_DACK "DACK" //Tag Duel attack
+#define TAG_ATCK "ATCK" //Tag doublon
+#define TAG_ISSU "ISSU" //Tag issue
 
 typedef struct joueur{
 	char *nickname;
 	char *ip;
 }joueur;
 
-char *generate_pokemon();
 void range_strcpy(char *s1, const char *s2, int rb, int re);
 char * serialize_uint32( char *buffer, uint32_t value);
 char serialize_uint8( char buffer, uint8_t value);

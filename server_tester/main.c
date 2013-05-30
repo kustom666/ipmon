@@ -26,35 +26,79 @@ int main(int arcg, char **argv)
 		exit(1);
 	}
 
+	int selecteur = 0;
 	do{
+		printf("Tester quel paquet?\n1-Nouveau\n2-DuelInit\n9-Stop\n");
+		scanf("%d", &selecteur);
 		memset(recv_buffer, 0, 1024);
-		printf("Veuillez entrer votre pseudo : ");
-		char *data = (char *) malloc(64*sizeof(char));
-		scanf("%s", data);
-		printf("Len data: %d\n", strlen(data));
-		uint32_t test = unserialize_uint32(( char *)TAG_LOGI);
-		pokeheader header = {test, 1, strlen(data)};
-
-		char buffer[10], *ptr;
-		ptr = serialize_header(&header);
-
-		char * append = forge_packet(ptr, data, 6, strlen(data));
-		printf("Envoi de : %s - len : %d\n", append, strlen(append));
-
-		//send_pokepacket();
-		sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
-
-		int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
-
-		if ( n  < 0)
+		if(selecteur == 1)
 		{
-			perror("Errreur de réception");
-			exit(1);
+			printf("\nVeuillez entrer votre pseudo : ");
+			char *data = (char *) malloc(64*sizeof(char));
+			scanf("%s", data);
+			printf("Len data: %d\n", strlen(data));
+			uint32_t test = unserialize_uint32(( char *)TAG_NOUV);
+			pokeheader header = {test, 1, strlen(data)};
+
+			char buffer[10], *ptr;
+			ptr = serialize_header(&header);
+
+			//char * append = forge_packet(ptr, data, 6, strlen(data));
+			char *append = (char*)malloc(strlen(data)+7*sizeof(char));
+			forge_packet(ptr, data, 6, strlen(data)+1, append);
+			printf("Envoi de : %s - len : %d\n", append, strlen(append));
+			//send_pokepacket();
+			sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
+			int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+			if ( n  < 0)
+			{
+				perror("Erreur de réception");
+				exit(1);
+			}
+			free(append);
+		}
+		else if(selecteur == 2)
+		{
+
+			printf("\nVeuillez entrer votre vitesse : ");
+			char *data = (char *) malloc(64*sizeof(char));
+			scanf("%s", data);
+			printf("Len data: %d\n", strlen(data));
+			uint32_t test = unserialize_uint32(( char *)TAG_NOUV);
+			pokeheader header = {test, 1, strlen(data)};
+
+			char buffer[10], *ptr;
+			ptr = serialize_header(&header);
+
+			//char * append = forge_packet(ptr, data, 6, strlen(data));
+			char *append = (char*)malloc(strlen(data)+7*sizeof(char));
+			forge_packet(ptr, data, 6, strlen(data)+1, append);
+			printf("Envoi de : %s - len : %d\n", append, strlen(append));
+			//send_pokepacket();
+			sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
+			int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+			if ( n  < 0)
+			{
+				perror("Erreur de réception");
+				exit(1);
+			}
+			free(append);
+
+		}
+		else if(selecteur == 9)
+		{
+			printf("Sortie!\n");
+		}
+		else
+		{
+			printf("Mauvaise sélection\n");
 		}
 
-		printf("Réponse : %s ", recv_buffer);
+		pokepacket recv_pack = unserialize_pokepacket(recv_buffer);
+		printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
+		//printf("Réponse : %s ", recv_buffer);
 
-	}while(1==1);
+	}while(selecteur!=9);
 
 	winsock_end();
 

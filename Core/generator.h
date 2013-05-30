@@ -9,6 +9,8 @@
 
 
 int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, char **output);
+char *generate_pokemon(char *output);
+
 
 #endif
 /* END DEF_GENERATOR */
