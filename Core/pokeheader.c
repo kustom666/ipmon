@@ -23,7 +23,7 @@ char * serialize_header(pokeheader *header)
 	buff8 = serialize_uint8(buff8, header->id);
 	buff8b = serialize_uint8(buff8b, header->data_size);
 
-	char *outstream = ( char *) malloc(6* sizeof( char));
+	char *outstream = ( char *) malloc(7* sizeof( char));
 	for(int i = 0; i< 4; i++){
 		outstream[i] = buff32[i];
  	}

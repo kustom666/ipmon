@@ -2,6 +2,7 @@
 #include "../Core/network.h"
 #include "../Core/pokeheader.h"
 #include "../Core/pokepacket.h"
+#include "../Core/generator.h"
 
 int main(int arcg, char **argv)
 {	
@@ -60,29 +61,31 @@ int main(int arcg, char **argv)
 		else if(selecteur == 2)
 		{
 
-			printf("\nVeuillez entrer votre vitesse : ");
+			printf("\nVeuillez entrer votre pseudo : ");
 			char *data = (char *) malloc(64*sizeof(char));
+			char *sendbuffer = (char *) malloc(1024 * sizeof(char));
 			scanf("%s", data);
 			printf("Len data: %d\n", strlen(data));
-			uint32_t test = unserialize_uint32(( char *)TAG_NOUV);
-			pokeheader header = {test, 1, strlen(data)};
-
-			char buffer[10], *ptr;
-			ptr = serialize_header(&header);
-
-			//char * append = forge_packet(ptr, data, 6, strlen(data));
-			char *append = (char*)malloc(strlen(data)+7*sizeof(char));
-			forge_packet(ptr, data, 6, strlen(data)+1, append);
-			printf("Envoi de : %s - len : %d\n", append, strlen(append));
-			//send_pokepacket();
-			sendto(sock ,append, strlen(append), 0, (SOCKADDR *)&to, to_size); 
+			pokepacket pack;
+			pokeheader head;
+			int pck_size = generate_packet(5, &pack, &head, TAG_DINI, &sendbuffer, data);
+			if(pck_size == 0)
+			{
+				printf("Erreur lors de la création du packet\n");
+			}
+			else
+			{
+				printf("Envoi de : %s\n", sendbuffer);
+				sendto(sock , sendbuffer, pck_size, 0, (SOCKADDR *)&to, sizeof(to)); 
+			}
 			int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 			if ( n  < 0)
 			{
 				perror("Erreur de réception");
 				exit(1);
 			}
-			free(append);
+			free(data);
+			free(sendbuffer);
 
 		}
 		else if(selecteur == 9)
@@ -101,6 +104,5 @@ int main(int arcg, char **argv)
 	}while(selecteur!=9);
 
 	winsock_end();
-
 	return 0;
 }

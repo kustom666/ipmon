@@ -1,4 +1,5 @@
 #include <string.h>
+#include "handler.h"
 #include "../Core/network.h"
 #include "../Core/pokeheader.h"
 #include "../Core/pokepacket.h"
@@ -48,25 +49,11 @@ int main (int argc, char **argv)
 
 		if(strcmp(pck_type(buffer), TAG_NOUV) == 0)
 		{
-			printf("Nouveau login depuis : %s\n", recv_ip);
-			printf("Recu : %s\n", buffer);
-
-			int pck_size = generate_packet(recv_pack.header.id+1, &pack, &head, TAG_DONE, &buff_send);
-
-			if(pck_size == 0)
-			{
-				printf("Erreur lors de la création du packet\n");
-			}
-			else
-			{
-				printf("Envoi de : %s\n", buff_send);
-				sendto(sock , buff_send, pck_size, 0, (SOCKADDR *)&from, sizeof(from)); 
-			}
+			handle_nouveau(sock,buffer, (SOCKADDR *)&from, sizeof(from), recv_ip);
 		}
 		else if(strcmp(pck_type(buffer), TAG_DINI) == 0)
 		{
-			printf("C'est l'heure du dudududududuel!\nEnvoyé depuis : %s\n", recv_ip);
-			
+			handle_duel(sock,buffer, (SOCKADDR *)&from, sizeof(from), recv_ip);
 		}
 		else
 		{

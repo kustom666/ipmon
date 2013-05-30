@@ -9,10 +9,10 @@
 #define TAG_LOGI "LOGI" //Tag login
 #define TAG_DATA "DATA" //Tag ??
 #define TAG_NOUV "NOUV" //Tag nouveau joueur
-#define TAG_DONE "DONE" //Tag duel fini
+#define TAG_DONE "DONE" //Tag donne 
 #define TAG_DINI "DINI" //Tag nouveau duel
-#define TAG_DACK "DACK" //Tag Duel attack
-#define TAG_ATCK "ATCK" //Tag doublon
+#define TAG_DACK "DACK" //Tag Duel acknowledgment
+#define TAG_ATCK "ATCK" //Tag attaque
 #define TAG_ISSU "ISSU" //Tag issue
 
 typedef struct joueur{

@@ -21,12 +21,12 @@ char * generate_pokemon(char *output)
 
 }
 
-int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, char **output)
+int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, char **output, char *indata)
 {
 	int pck_size = 0;
+	char * data = (char*)malloc(1024*sizeof(char));
 	if(tag == TAG_DONE)
 	{
-		char * data = (char*)malloc(1024*sizeof(char));
 		generate_pokemon(data);
 		uint32_t donne = unserialize_uint32(( char *)TAG_DONE);
 		head->type = donne;
@@ -38,30 +38,60 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 		char *buff_head = serialize_header(head);
 		forge_packet(buff_head, data, 6, strlen(data)+1, *output);
 		int lendata = strlen(data);
-		printf("Generated output : %s\n", *output);
-		free(data);
 		return 6 + lendata;
 	}
-	/*else if (tag == TAG_ATCK)
+	else if(tag == TAG_DACK)
 	{
-		char *data = "42:25:34:53:10:5:(12:0:9:0:0:1):(19:0:3:20:0:30)";
-		uint32_t donne = unserialize_uint32(( char *)TAG_DONE);
-		head->type = donne;
+		
+		uint32_t dack = unserialize_uint32(( char *)TAG_DACK);
+		char *buffstrtok = strtok(indata, ":");
+		int i = 0;
+		while(i != 5)
+		{
+			buffstrtok = strtok(NULL, ":");
+			i++;
+		}
+		printf("rapidité : %s\n", buffstrtok);
+
+		char *aforet = "foret-";
+		char *aforger = (char*) malloc(512*sizeof(char));
+		strcpy(aforger, aforet);
+		strcat(aforger, buffstrtok);
+
+		printf("A forger : %s\n", aforger);
+
+		head->type = dack;
 		head->id = nbpack+1;
-		head->data_size = strlen(data);
+		head->data_size = strlen(aforger);
 		pack->header = *head;
-		pack->data = data;
+		pack->data = aforger;
 
 		char *buff_head = serialize_header(head);
-
-		*output = forge_packet(buff_head, data, 6, strlen(data));
-
+		forge_packet(buff_head, aforger, 6, strlen(aforger)+1, *output);
+		int lenaforger = strlen(aforger);
 		printf("Generated output : %s\n", *output);
+		free(aforger);
+		return 6 + lenaforger;
+	}
+	else if(tag == TAG_DINI)
+	{
+		
+		uint32_t dini = unserialize_uint32(( char *)TAG_DINI);
+		head->type = dini;
+		head->id = nbpack+1;
+		head->data_size = strlen(indata);
+		pack->header = *head;
+		pack->data = indata;
 
-		return 6 + strlen(data);
-	}*/
+		char *buff_head = serialize_header(head);
+		forge_packet(buff_head, indata, 6, strlen(indata)+1, *output);
+		int lenindata = strlen(indata);
+		printf("Generated output : %s\n", *output);
+		return 6 + lenindata;
+	}
 	else
 	{
 		printf("Mauvais tag\n");
 	}
+	free(data);
 }
