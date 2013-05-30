@@ -11,7 +11,7 @@ void range_strcpy(char *s1, const char *s2, int rb, int re)
 	}
 }
 
- char * serialize_uint32( char *buffer, uint32_t value)
+char * serialize_uint32( char *buffer, uint32_t value)
 {
   buffer[0] = value >> 24;
   buffer[1] = value >> 16;

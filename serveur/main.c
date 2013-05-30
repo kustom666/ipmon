@@ -53,15 +53,18 @@ int main (int argc, char **argv)
 		}
 		else if(strcmp(pck_type(buffer), TAG_DINI) == 0)
 		{
-			handle_duel(sock,buffer, (SOCKADDR *)&from, sizeof(from), recv_ip);
+			handle_duel(sock,recv_pack.data, (SOCKADDR *)&from, sizeof(from), recv_ip);
 		}
 		else
 		{
 			printf("Type de packet inconnu :\n%s\n", buffer);
 		}
+
 	}while(1==1);
 
 	winsock_end();
+	
+	
 	free(buff_send);
 	return 0;
 

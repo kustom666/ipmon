@@ -44,19 +44,20 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 	{
 		
 		uint32_t dack = unserialize_uint32(( char *)TAG_DACK);
-		char *buffstrtok = strtok(indata, ":");
-		int i = 0;
-		while(i != 5)
-		{
-			buffstrtok = strtok(NULL, ":");
-			i++;
-		}
-		printf("rapidité : %s\n", buffstrtok);
+
+		pokemon poke_gen;
+		unserialize_pokemon(indata, &poke_gen);
+
+		char *buffvit = (char*)malloc(8*sizeof(char));
+
+		sprintf(buffvit, "%d", poke_gen.speed);
+
+		printf("rapidité : %s\n", buffvit);
 
 		char *aforet = "foret-";
 		char *aforger = (char*) malloc(512*sizeof(char));
 		strcpy(aforger, aforet);
-		strcat(aforger, buffstrtok);
+		strcat(aforger, buffvit);
 
 		printf("A forger : %s\n", aforger);
 
@@ -69,7 +70,7 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 		char *buff_head = serialize_header(head);
 		forge_packet(buff_head, aforger, 6, strlen(aforger)+1, *output);
 		int lenaforger = strlen(aforger);
-		printf("Generated output : %s\n", *output);
+		//printf("Generated output : %s\n", *output);
 		free(aforger);
 		return 6 + lenaforger;
 	}

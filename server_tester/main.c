@@ -28,6 +28,17 @@ int main(int arcg, char **argv)
 	}
 
 	int selecteur = 0;
+	struct timeval timeout;      
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 0;
+
+    if (setsockopt (sock, SOL_SOCKET, SO_RCVTIMEO, (char *)&timeout,
+                sizeof(timeout)) < 0)
+        error("setsockopt failed\n");
+
+    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout,
+                sizeof(timeout)) < 0)
+        error("setsockopt failed\n");
 	do{
 		printf("Tester quel paquet?\n1-Nouveau\n2-DuelInit\n9-Stop\n");
 		scanf("%d", &selecteur);
@@ -61,7 +72,7 @@ int main(int arcg, char **argv)
 		else if(selecteur == 2)
 		{
 
-			printf("\nVeuillez entrer votre pseudo : ");
+			printf("\nVeuillez entrer votre pseudo-vitesse : ");
 			char *data = (char *) malloc(64*sizeof(char));
 			char *sendbuffer = (char *) malloc(1024 * sizeof(char));
 			scanf("%s", data);

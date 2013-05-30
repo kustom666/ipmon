@@ -91,7 +91,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_serveur_OBJECTS = main.$(OBJEXT) network.$(OBJEXT) \
 	pokepacket.$(OBJEXT) pokeheader.$(OBJEXT) utility.$(OBJEXT) \
-	generator.$(OBJEXT) handler.$(OBJEXT)
+	generator.$(OBJEXT) handler.$(OBJEXT) pokemon.$(OBJEXT)
 serveur_OBJECTS = $(am_serveur_OBJECTS)
 serveur_DEPENDENCIES =
 AM_V_P = $(am__v_P_@AM_V@)
@@ -240,8 +240,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-AM_CCFLAGS = $(INIT_CFLAGS)
-serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.c ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h ../Core/generator.h ../Core/generator.c ./handler.h ./handler.c
+AM_CCFLAGS = $(INIT_CFLAGS) -fwritable-strings
+serveur_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.c ../Core/pokepacket.h ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h ../Core/generator.h ../Core/generator.c ./handler.h ./handler.c ../Core/pokemon.h ../Core/pokemon.c
 serveur_LDADD = $(INIT_LIBS)
 all: all-am
 
@@ -335,6 +335,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokeheader.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokemon.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/pokepacket.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Po@am__quote@
 
@@ -435,6 +436,20 @@ handler.obj: ./handler.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='./handler.c' object='handler.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o handler.obj `if test -f './handler.c'; then $(CYGPATH_W) './handler.c'; else $(CYGPATH_W) '$(srcdir)/./handler.c'; fi`
+
+pokemon.o: ../Core/pokemon.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pokemon.o -MD -MP -MF $(DEPDIR)/pokemon.Tpo -c -o pokemon.o `test -f '../Core/pokemon.c' || echo '$(srcdir)/'`../Core/pokemon.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pokemon.Tpo $(DEPDIR)/pokemon.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/pokemon.c' object='pokemon.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pokemon.o `test -f '../Core/pokemon.c' || echo '$(srcdir)/'`../Core/pokemon.c
+
+pokemon.obj: ../Core/pokemon.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT pokemon.obj -MD -MP -MF $(DEPDIR)/pokemon.Tpo -c -o pokemon.obj `if test -f '../Core/pokemon.c'; then $(CYGPATH_W) '../Core/pokemon.c'; else $(CYGPATH_W) '$(srcdir)/../Core/pokemon.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/pokemon.Tpo $(DEPDIR)/pokemon.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/pokemon.c' object='pokemon.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pokemon.obj `if test -f '../Core/pokemon.c'; then $(CYGPATH_W) '../Core/pokemon.c'; else $(CYGPATH_W) '$(srcdir)/../Core/pokemon.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

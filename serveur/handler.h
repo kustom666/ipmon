@@ -7,6 +7,7 @@
 #include "../Core/pokepacket.h"
 #include "../Core/utility.h"
 #include "../Core/generator.h"
+#include "../Core/pokemon.h"
 
 void handle_nouveau(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, int dest_len, char *recv_ip);
 void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, int dest_len, char *recv_ip);
