@@ -6,8 +6,8 @@
 #include <string.h>
 #include <time.h>
 
-#define TAG_LOGI "LOGI" //Tag login
-#define TAG_DATA "DATA" //Tag ??
+#define TAG_LOGI "LOGI" //Tag login (extension future)
+#define TAG_DATA "DATA" //Tag legacy
 #define TAG_NOUV "NOUV" //Tag nouveau joueur
 #define TAG_DONE "DONE" //Tag donne 
 #define TAG_DINI "DINI" //Tag nouveau duel

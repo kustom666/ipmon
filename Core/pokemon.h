@@ -27,4 +27,5 @@ typedef struct pokemon{
 
 
 void unserialize_pokemon(char *input, pokemon *pkm);
+void serialize_pokemon(pokemon pkm, char **output);
 #endif

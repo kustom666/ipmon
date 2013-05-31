@@ -1,1 +1,1 @@
-SUBDIRS = server_tester serveur
+SUBDIRS = server_tester serveur client

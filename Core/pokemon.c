@@ -37,3 +37,14 @@ void unserialize_pokemon(char *input, pokemon *pkm)
 	//free(buffstrtok);
 	free(intermediate);
 }
+
+void serialize_pokemon(pokemon pkm, char **output)
+{
+	sprintf(*output, "%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d:%d",pkm.id ,pkm.spec ,pkm.hp ,pkm.hpmax ,pkm.xp ,pkm.speed ,pkm.a_f ,pkm.a_eau ,pkm.a_ele ,pkm.a_pl ,pkm.a_air , pkm.a_pi , pkm.d_f , pkm.d_eau , pkm.d_ele , pkm.d_pl , pkm.d_air , pkm.d_pi);
+}
+
+void poke_dump(pokemon pkm)
+{
+	printf("Pokémon actuel : \nID : %d\nEspèce : %d\nVie : %d\nVie max : %d\nExperience : %d\nRapidité : %d\n", 
+		pkm.id, pkm.spec,pkm.hp, pkm.hpmax, pkm.xp, pkm.speed);
+}

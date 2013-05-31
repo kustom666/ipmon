@@ -21,4 +21,4 @@ AC_TYPE_UINT32_T
 AC_FUNC_MALLOC
 AC_CHECK_FUNCS([gethostbyname socket])
 
-AC_OUTPUT(Makefile server_tester/Makefile serveur/Makefile)
+AC_OUTPUT(Makefile server_tester/Makefile serveur/Makefile client/Makefile)

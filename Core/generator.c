@@ -40,6 +40,20 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 		int lendata = strlen(data);
 		return 6 + lendata;
 	}
+	else if (tag == TAG_NOUV)
+	{
+		strcpy(data, indata);
+		uint32_t nouv = unserialize_uint32((char*)TAG_NOUV);
+		head->type = nouv;
+		head->id = nbpack+1;
+		head->data_size = strlen(data);
+		pack->header = *head;
+		pack->data = data;
+
+		char *buff_head = serialize_header(head);
+		forge_packet(buff_head, data, 6, strlen(data)+1, *output);
+		return 6+strlen(data);
+	}
 	else if(tag == TAG_DACK)
 	{
 		
@@ -76,7 +90,6 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 	}
 	else if(tag == TAG_DINI)
 	{
-		
 		uint32_t dini = unserialize_uint32(( char *)TAG_DINI);
 		head->type = dini;
 		head->id = nbpack+1;
@@ -87,8 +100,35 @@ int generate_packet(int nbpack, pokepacket *pack, pokeheader *head, char *tag, c
 		char *buff_head = serialize_header(head);
 		forge_packet(buff_head, indata, 6, strlen(indata)+1, *output);
 		int lenindata = strlen(indata);
-		printf("Generated output : %s\n", *output);
 		return 6 + lenindata;
+	}
+	else if(tag == TAG_ATCK)
+	{
+		strcpy(data, indata);
+		uint32_t atck = unserialize_uint32((char*)TAG_ATCK);
+		head->type = atck;
+		head->id = nbpack+1;
+		head->data_size = strlen(data);
+		pack->header = *head;
+		pack->data = data;
+
+		char *buff_head = serialize_header(head);
+		forge_packet(buff_head, data, 6, strlen(data)+1, *output);
+		return 6+strlen(data);
+	}
+	else if(tag == TAG_ISSU)
+	{
+		strcpy(data, indata);
+		uint32_t issu = unserialize_uint32((char*)TAG_ISSU);
+		head->type = issu;
+		head->id = nbpack+1;
+		head->data_size = strlen(data);
+		pack->header = *head;
+		pack->data = data;
+
+		char *buff_head = serialize_header(head);
+		forge_packet(buff_head, data, 6, strlen(data)+1, *output);
+		return 6+strlen(data);
 	}
 	else
 	{

@@ -4560,7 +4560,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile server_tester/Makefile serveur/Makefile"
+ac_config_files="$ac_config_files Makefile server_tester/Makefile serveur/Makefile client/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5307,6 +5307,7 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "server_tester/Makefile") CONFIG_FILES="$CONFIG_FILES server_tester/Makefile" ;;
     "serveur/Makefile") CONFIG_FILES="$CONFIG_FILES serveur/Makefile" ;;
+    "client/Makefile") CONFIG_FILES="$CONFIG_FILES client/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
