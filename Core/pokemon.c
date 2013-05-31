@@ -34,6 +34,6 @@ void unserialize_pokemon(char *input, pokemon *pkm)
 	pkm->d_air = buffspecs[16];
 	pkm->d_pi = buffspecs[17];
 	free(storer);
-	free(buffstrtok);
+	//free(buffstrtok);
 	free(intermediate);
 }
