@@ -42,14 +42,14 @@ SOCKADDR_IN setup_send_addr(const char *hostname)
 	return to;
 }
 
-int send_pokeheader(SOCKET socket, const SOCKADDR *dest, int dlen, pokeheader *header)
+/*int send_pokeheader(SOCKET socket, const SOCKADDR *dest, int dlen, pokeheader *header)
 {
 	char *buff;
 
 	buff = serialize_header(header);
 	int nb = sendto(socket,buff, 6, 0, dest, dlen); // Impossible d'utiliser sizeof, puisque buff est un pointeur, donc sizeof retourne la taille du pointeur
 	return 0;
-}
+}*/
 
 
 

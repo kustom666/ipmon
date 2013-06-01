@@ -45,7 +45,7 @@ int main (int argc, char **argv)
 
 		pokepacket recv_pack = unserialize_pokepacket(buffer);
 		char *recv_ip = inet_ntoa(from.sin_addr);
-		printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
+		//printf("Type : %d\nID : %d\nTaille donnees : %d \nDonnes : %s\n",recv_pack.header.type,recv_pack.header.id, recv_pack.header.data_size, recv_pack.data );
 
 		if(strcmp(pck_type(buffer), TAG_NOUV) == 0)
 		{

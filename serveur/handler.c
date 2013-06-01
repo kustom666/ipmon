@@ -67,33 +67,42 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 			do{
 				char *serialized_poke = (char*)malloc(512*sizeof(char));
 				char *resp = (char*)malloc(512*sizeof(char));
+				
+				//On attaque une première fois
 				serialize_pokemon(rand_poke, &serialized_poke);
 				pck_size = generate_packet(12, &pack, &head, TAG_ATCK, &buff_send, serialized_poke);
 
 				if(pck_size != 0)
 				{
+					//On reçoit l'issue
 					pokemon adv_poke;
 					sendto(sock, buff_send, pck_size, 0, dest_addr, dest_len);
+					memset(buff_send, 0,1024);
 					recvfrom(sock, buff_send, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+					printf("On a reçu l'issue : \n%s\n", buff_send);
 					strcpy(resp, buff_send);
 					char *hp_loss = strtok(resp, ":");
 					char *victor = strtok(NULL, ":");
 					char *issue = strtok(NULL, ":");
 
-					if(strcmp(issue, "KO") == 0)
+					if(strcmp(issue, "KO") == 0) //Si l'issue est un ko ennemi
 					{
 						printf("Le pokémon ennemi est KO! Lol NUB!\n");
 						cont = 1;
 					}
-					else if(strcmp(issue, "OK") == 0)
+					else if(strcmp(issue, "OK") == 0) //Sinon le duel continue
 					{
 						memset(resp,0,512);
+						//On retire des HP à notre pokémon
 						printf("Le pokémon ennemi à survécu.\nNotre pokémon à perdu %s hp\n", hp_loss);
+						fflush(stdout);
 						rand_poke.hp -= atoi(hp_loss);
 
+						//On reçoit l'attaque adverse
 						recvfrom(sock, buff_send, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 						strcpy(resp, buff_send);
 
+						//calcul des dégats (moyenne arithmétique des composantes)
 						unserialize_pokemon(resp, &adv_poke);
 						int adv_atkp = (adv_poke.a_f +adv_poke.a_eau +adv_poke.a_ele +adv_poke.a_pl +adv_poke.a_air +adv_poke.a_pi)/6;
 						int for_atkp = (rand_poke.a_f +rand_poke.a_eau +rand_poke.a_ele +rand_poke.a_pl +rand_poke.a_air +rand_poke.a_pi)/6;
@@ -105,8 +114,9 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 						int delta_for = adv_atkp - for_defp;
 						int adv_hp_loss, for_hp_loss;
 
-						adv_hp_loss = delta_adv > 0 ? delta_adv : 0;
-						for_hp_loss = delta_for > 0 ? delta_for : 0;
+						//On perds au moins 1HP à chaque fois, sous peine de boucle infinie
+						adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
+						for_hp_loss = delta_for > 0 ? delta_for : 1;
 
 						printf("Le pokémon ennemi à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss);
 						
@@ -117,25 +127,34 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 						char * dataresp = (char*)malloc(64*sizeof(char));
 						sprintf(dataresp, "%d:A:%s", adv_hp_loss, new_issue);
 
+						printf("Issue de l'attaque : %s\n", dataresp);
 						pck_size = generate_packet(12, &pack, &head, TAG_ISSU, &buff_send, dataresp);
 						sendto(sock, buff_send, pck_size, 0, dest_addr, dest_len);
+
+						if(rand_poke.hp == 0)
+						{
+							printf("Le pokémon sauvage est KO!\n");
+							cont = 1;
+						}
 					}
 					else
 					{
-						printf("Mauvais packet\n");
+						fflush(stdout);
+						printf("Mauvais packet\nReçu : %s\nHP loss : %s - Victor : %s - Issue : %s \n",buff_send,hp_loss,victor, issue);
+						fflush(stdout);
 						cont = 1;
 					}
 
 				}
-
+				memset(buff_send,0,1024);
 				free(serialized_poke);
-				free(resp);
+				free(resp); 
 			}while(cont !=1);
 
 		}
 		else
 		{
-			printf("%s à l'initiative!", pseudo_ennemi);
+			printf("%s à l'initiative!\n", pseudo_ennemi);
 		}
 	}
 

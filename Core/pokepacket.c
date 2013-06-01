@@ -19,5 +19,6 @@ pokepacket unserialize_pokepacket(char *data)
 	range_strcpy(buff_payload, data, 6, payload_size+6);
 
 	pokepacket packet = {head, buff_payload};
+	free(buff_payload);
 	return packet;
 }

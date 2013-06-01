@@ -13,7 +13,7 @@ pokeheader unserialize_header(char *instream)
 
 }
 
-char * serialize_header(pokeheader *header)
+void serialize_header(pokeheader *header, char **outstream)
 {
 	char buff8;
 	char buff8b;
@@ -23,15 +23,17 @@ char * serialize_header(pokeheader *header)
 	buff8 = serialize_uint8(buff8, header->id);
 	buff8b = serialize_uint8(buff8b, header->data_size);
 
-	char *outstream = ( char *) malloc(7* sizeof( char));
+	char *instream = ( char *) malloc(7* sizeof( char));
 	for(int i = 0; i< 4; i++){
-		outstream[i] = buff32[i];
+		instream[i] = buff32[i];
  	}
 
-	outstream[4] = buff8;
-	outstream[5] = buff8b;
+	instream[4] = buff8;
+	instream[5] = buff8b;
+
+	memcpy(*outstream, instream, 7 );
 
 	free(buff32);
+	free(instream);
 
-	return outstream;
 }

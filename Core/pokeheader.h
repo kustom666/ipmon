@@ -15,7 +15,7 @@ typedef struct pokeheader{
 
 
 pokeheader unserialize_header(char *instream);
-char * serialize_header(pokeheader *header);
+void serialize_header(pokeheader *header, char **outstream);
 
 
 #endif
