@@ -91,7 +91,7 @@ am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
 am_client_OBJECTS = main.$(OBJEXT) network.$(OBJEXT) \
 	pokepacket.$(OBJEXT) pokeheader.$(OBJEXT) utility.$(OBJEXT) \
-	generator.$(OBJEXT) pokemon.$(OBJEXT)
+	generator.$(OBJEXT) pokemon.$(OBJEXT) chandler.$(OBJEXT)
 client_OBJECTS = $(am_client_OBJECTS)
 client_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
@@ -241,7 +241,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 AM_CCFLAGS = $(INIT_CFLAGS) -fwritable-strings -g
-client_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.h ../Core/pokepacket.c ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h ../Core/generator.h ../Core/generator.c ../Core/pokemon.h ../Core/pokemon.c
+client_SOURCES = main.c ../Core/network.h ../Core/network.c ../Core/pokeheader.h ../Core/pokepacket.h ../Core/pokepacket.c ../Core/pokeheader.c ../Core/utility.c ../Core/utility.h ../Core/generator.h ../Core/generator.c ../Core/pokemon.h ../Core/pokemon.c ./chandler.c ./chandler.h
 server_tester_LDADD = $(INIT_LIBS)
 all: all-am
 
@@ -330,6 +330,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chandler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/generator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/network.Po@am__quote@
@@ -435,6 +436,20 @@ pokemon.obj: ../Core/pokemon.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='../Core/pokemon.c' object='pokemon.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o pokemon.obj `if test -f '../Core/pokemon.c'; then $(CYGPATH_W) '../Core/pokemon.c'; else $(CYGPATH_W) '$(srcdir)/../Core/pokemon.c'; fi`
+
+chandler.o: ./chandler.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT chandler.o -MD -MP -MF $(DEPDIR)/chandler.Tpo -c -o chandler.o `test -f './chandler.c' || echo '$(srcdir)/'`./chandler.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/chandler.Tpo $(DEPDIR)/chandler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='./chandler.c' object='chandler.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o chandler.o `test -f './chandler.c' || echo '$(srcdir)/'`./chandler.c
+
+chandler.obj: ./chandler.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT chandler.obj -MD -MP -MF $(DEPDIR)/chandler.Tpo -c -o chandler.obj `if test -f './chandler.c'; then $(CYGPATH_W) './chandler.c'; else $(CYGPATH_W) '$(srcdir)/./chandler.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/chandler.Tpo $(DEPDIR)/chandler.Po
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(AM_V_CC)source='./chandler.c' object='chandler.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(AM_V_CC@am__nodep@)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o chandler.obj `if test -f './chandler.c'; then $(CYGPATH_W) './chandler.c'; else $(CYGPATH_W) '$(srcdir)/./chandler.c'; fi`
 
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique

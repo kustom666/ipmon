@@ -12,7 +12,6 @@ int main (int argc, char **argv)
 	SOCKET sock = setup_socket();
 	SOCKADDR_IN listen = setup_addr();
 	int nbpack = 0;
-	char buffer[1024];
 
 	struct hostent *host_info = NULL;
 	SOCKADDR_IN from = {0};
@@ -22,6 +21,7 @@ int main (int argc, char **argv)
 	//Nos structures utilisées pour l'envoi/réception de packets
 	pokeheader head;
 	pokepacket pack;
+	char *buffer = (char*) malloc(1024*sizeof(char));
 	char *buff_send = (char*) malloc(1024*sizeof(char));
 
 	if(bind(sock, (SOCKADDR *) &listen, sizeof listen) == SOCKET_ERROR)
@@ -64,7 +64,7 @@ int main (int argc, char **argv)
 
 	winsock_end();
 	
-	
+	free(buffer);
 	free(buff_send);
 	return 0;
 
