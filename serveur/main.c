@@ -18,6 +18,16 @@ int main (int argc, char **argv)
 	int fromsize = sizeof from;
 	SOCKADDR_IN to;
 
+	/*Mise en place d'un timeout*/
+	int len_pack, selecteur = 0;
+	struct timeval timeout;      
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 0;
+
+    if (setsockopt (sock, SOL_SOCKET, SO_SNDTIMEO, (char *)&timeout,
+                sizeof(timeout)) < 0)
+        error("setsockopt failed\n");
+
 	//Nos structures utilisées pour l'envoi/réception de packets
 	pokeheader head;
 	pokepacket pack;

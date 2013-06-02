@@ -22,7 +22,10 @@ int main(int arcg, char **argv)
 	int to_size = sizeof(to);
 	pokepacket pack;
 	pokeheader head;
+	pokemon pokeceinture[6];
+	int nbpokemon = 0;
 	pokemon cur_poke;
+	pokemon cap_poke;
 	
 	if(bind(sock, (SOCKADDR *) &listen, sizeof listen) == SOCKET_ERROR)
 	{
@@ -51,7 +54,7 @@ int main(int arcg, char **argv)
 	do{
 
 		printf("Salutation %s!\nQue veux tu faire?\n", nom);
-		printf("1- Nouveau pokémon\n2- Duel la forêt\n8- Afficher les stats de ton pokémon\n9- Quitter\n");
+		printf("1- Nouveau pokémon\n2- Duel la forêt\n3- Afficher la pokéceinture \n4- Afficher les stats de ton pokémon actuel\n9- Quitter\n");
 		scanf("%d", &selecteur);
 		char *recv_buffer = (char*)malloc(1024*sizeof(char));
 		char *send_buffer = (char*)malloc(1024*sizeof(char));
@@ -77,7 +80,27 @@ int main(int arcg, char **argv)
 		}
 		else if(selecteur == 2)
 		{
-			chandle_duel(sock, (SOCKADDR *)&to, sizeof(to), nom, cur_poke);
+			chandle_duel(sock, (SOCKADDR *)&to, sizeof(to), nom, cur_poke, &cap_poke);
+			cur_poke.xp ++;
+			if(nbpokemon < 6)
+			{
+				printf("Vous avez capturé le pokémon\nIl est ajouté à votre pokéceinture\n");
+				pokeceinture[nbpokemon] = cap_poke;
+			}
+			else
+			{
+				printf("Votre pokéceinture est pleine. Le pokémon sauvage ne peut pas être capturé!\n");
+			}
+		}
+		else if(selecteur == 3)
+		{
+			printf("Contenu de votre pokéceinture : \n");
+			for(int x = 0; x < nbpokemon; x++){
+				char *bufferpoke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(pokeceinture[x], &bufferpoke);
+				printf("Pokéball n°%d : %s\n");
+				free(bufferpoke);
+			}
 		}
 		else if(selecteur == 8)
 		{
@@ -88,7 +111,7 @@ int main(int arcg, char **argv)
 		memset(output, 0, 512);*/
 		memset(multiple, 0, 1024);
 		free(output);
-		//free(multiple);
+		free(multiple);
 		free(recv_buffer);
 		free(send_buffer);
 	}while(selecteur!=9);

@@ -29,8 +29,9 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 	char *storage = (char*)malloc(512*sizeof(char));
 	char *buff_send = (char * )malloc(1024*sizeof(char));
 	char *prepsend = (char*)malloc(1024*sizeof(char));
-	SOCKADDR_IN from = {0};
-	int fromsize = sizeof from;
+	char *backup_poke = (char*)malloc(512*sizeof(char));
+	struct sockaddr from = *dest_addr;
+	int fromsize = sizeof(from);
 	pokepacket pack;
 	pokeheader head;
 	pokemon rand_poke;
@@ -49,7 +50,9 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 
 	printf("L'ennemi est : %s\nVitesse : %d\n",pseudo_ennemi, vit_e);
 
+	//On génère le pokémon sauvage, plus le backup 
 	generate_pokemon(prepsend);
+	strcpy(backup_poke, prepsend);
 	unserialize_pokemon(prepsend, &rand_poke);
 
 	int pck_size = generate_packet(12, &pack, &head, TAG_DACK, &buff_send, prepsend);
@@ -132,7 +135,11 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 					if(strcmp(new_issue, "KO") == 0)
 					{
 						printf("Le pokémon sauvage est KO!\n");
+						//Si le pokémon sauvage à perdu, on l'envoi au dresseur
+						pck_size = generate_packet(12, &pack, &head, TAG_ISSU, &buff_send, backup_poke);
+						sendto(sock, buff_send, pck_size, 0, dest_addr, dest_len);
 						cont = 1;
+						break;
 					}
 				}
 				else
@@ -140,7 +147,7 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 					fflush(stdout);
 					printf("Mauvais packet\nReçu : %s\nHP loss : %s - Victor : %s - Issue : %s \n",buff_send,hp_loss,victor, issue);
 					fflush(stdout);
-					cont = 1;
+					break;
 				}
 				memset(buff_send,0,1024);
 				free(serialized_poke);
@@ -151,6 +158,84 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 		else
 		{
 			printf("%s à l'initiative!\n", pseudo_ennemi);
+			char *multiple = (char*) malloc(1024*sizeof(char));
+			char *recv_buffer = (char*) malloc(1024*sizeof(char));
+			int combat = 0;
+			do{
+				pokemon adv_poke;
+				memset(multiple, 0, 1024);
+				recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);	
+				printf("\nLe pokémon du dresseur est : %s\n", recv_buffer);
+				fflush(stdout);
+				strcpy(multiple, recv_buffer);
+				unserialize_pokemon(multiple, &adv_poke);
+				int adv_atkp = (adv_poke.a_f +adv_poke.a_eau +adv_poke.a_ele +adv_poke.a_pl +adv_poke.a_air +adv_poke.a_pi)/6;
+				int for_atkp = (rand_poke.a_f +rand_poke.a_eau +rand_poke.a_ele +rand_poke.a_pl +rand_poke.a_air +rand_poke.a_pi)/6;
+				
+				int for_defp = (rand_poke.d_f +rand_poke.d_eau +rand_poke.d_ele +rand_poke.d_pl+rand_poke.d_air +rand_poke.d_pi)/6;
+				int adv_defp = (adv_poke.d_f +adv_poke.d_eau +adv_poke.d_ele +adv_poke.d_pl+adv_poke.d_air +adv_poke.d_pi)/6;
+
+				int delta_adv = for_atkp - adv_defp;
+				int delta_for = adv_atkp - for_defp;
+				int adv_hp_loss, for_hp_loss;
+
+				adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
+				for_hp_loss = delta_for > 0 ? delta_for : 1;
+
+				rand_poke.hp -= for_hp_loss;
+				printf("Le pokémon ennemi à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp et tombe à %d HP\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss, rand_poke.hp);
+
+				//Notre pokémon à défendu, on envoie la réponse
+
+				char *new_issue = rand_poke.hp > 0 ? "OK" : "KO";
+
+				char * dataresp = (char*)malloc(64*sizeof(char));
+				sprintf(dataresp, "%d:A:%s", adv_hp_loss, new_issue);
+
+				printf("on a créé l'issue : %s\n", dataresp);
+				fflush(stdout);
+				memset(recv_buffer,0,1024);
+				memset(buff_send, 0,1024);
+				pck_size = generate_packet(12, &pack, &head, TAG_ISSU, &buff_send, dataresp);
+				sendto(sock, buff_send, pck_size, 0, dest_addr, dest_len);
+
+				printf("On envoie l'issue : %s\n", buff_send);
+				fflush(stdout);
+
+				if(strcmp(new_issue, "KO") == 0)
+				{
+					printf("Le pokémon sauvage est KO!\n");
+					pck_size = generate_packet(12, &pack, &head, TAG_ISSU, &buff_send, backup_poke);
+					sendto(sock, buff_send, pck_size, 0, dest_addr, dest_len);
+					break;
+				}
+				//On a envoyé l'issue, on prépare notre attaque 
+				char *serialized_poke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(rand_poke, &serialized_poke);
+				pck_size = generate_packet(12, &pack, &head, TAG_ATCK, &buff_send, serialized_poke);
+				sendto(sock, buff_send, pck_size,0, dest_addr, dest_len);
+
+				//On a attaqué, attendons l'issue
+				memset(multiple, 0, 1024);
+				recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+				strcpy(multiple, recv_buffer);
+
+				char *hp_loss = strtok(multiple, ":");
+				char *victor = strtok(NULL, ":");
+				char *issue = strtok(NULL, ":");
+
+				if(strcmp(issue, "KO") == 0)
+				{
+					printf("Le pokémon ennemi est KO! Lol NUB! La forêt à gagné!\n");
+					combat = 1;
+				}
+				else if(strcmp(issue, "OK") == 0)
+				{	
+					rand_poke.hp -= atoi(hp_loss);
+				}
+				free(dataresp);
+				free(serialized_poke);
+			}while(combat != 1);
 		}
 	}
 
