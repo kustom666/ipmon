@@ -1,10 +1,10 @@
 #include "chandler.h"
 
-void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, char *nom, pokemon cur_poke, pokemon *rec_poke)
+int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, char *nom, pokemon cur_poke, pokemon *rec_poke)
 {
 	pokepacket pack;
 	pokeheader head;
-	int len_pack;
+	int len_pack, issue_finale;
 	SOCKADDR_IN from = {0};
 	int fromsize = sizeof from;
 	char *recv_buffer = (char*)malloc(1024*sizeof(char));
@@ -85,6 +85,7 @@ void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, c
 				if(strcmp(new_issue, "KO") == 0)
 				{
 					printf("Votre pokémon est tombé!\n");
+					issue_finale = 1;
 					break;
 				}
 				//On a envoyé l'issue, on prépare notre attaque 
@@ -110,6 +111,7 @@ void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, c
 					recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 					//On l'enregistre
 					unserialize_pokemon(recv_buffer, rec_poke);
+					issue_finale = 0;
 					combat = 1;
 				}
 				else if(strcmp(issue, "OK") == 0)
@@ -151,6 +153,7 @@ void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, c
 					recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 					//On l'enregistre
 					unserialize_pokemon(recv_buffer, rec_poke);
+					issue_finale = 0;
 					cont = 1;
 				}
 				else if(strcmp(issue, "OK") == 0) //Sinon le duel continue
@@ -197,6 +200,7 @@ void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, c
 					if(strcmp(new_issue, "KO") == 0)
 					{
 						printf("Notre pokémon est KO!\n");
+						issue_finale = 1;
 						cont = 1;
 					}
 				}

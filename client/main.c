@@ -25,7 +25,6 @@ int main(int arcg, char **argv)
 	pokemon pokeceinture[6];
 	int nbpokemon = 0;
 	pokemon cur_poke;
-	pokemon cap_poke;
 	
 	if(bind(sock, (SOCKADDR *) &listen, sizeof listen) == SOCKET_ERROR)
 	{
@@ -54,12 +53,13 @@ int main(int arcg, char **argv)
 	do{
 
 		printf("Salutation %s!\nQue veux tu faire?\n", nom);
-		printf("1- Nouveau pokémon\n2- Duel la forêt\n3- Afficher la pokéceinture \n4- Afficher les stats de ton pokémon actuel\n9- Quitter\n");
+		printf("1- Nouveau pokémon\n2- Duel la forêt\n3- Afficher la pokéceinture \n4- Afficher les stats de ton pokémon actuel\n5- Jeter un pokémon\n9- Quitter\n");
 		scanf("%d", &selecteur);
 		char *recv_buffer = (char*)malloc(1024*sizeof(char));
 		char *send_buffer = (char*)malloc(1024*sizeof(char));
 		char *output = (char*)malloc(512*sizeof(char));
    		char *multiple = (char*)malloc(1024*sizeof(char));
+   		pokemon cap_poke;
 
 		if(selecteur == 1)
 		{
@@ -80,12 +80,19 @@ int main(int arcg, char **argv)
 		}
 		else if(selecteur == 2)
 		{
-			chandle_duel(sock, (SOCKADDR *)&to, sizeof(to), nom, cur_poke, &cap_poke);
-			cur_poke.xp ++;
-			if(nbpokemon < 6)
+			int issue_finale = chandle_duel(sock, (SOCKADDR *)&to, sizeof(to), nom, cur_poke, &cap_poke);
+			if(nbpokemon < 6 && issue_finale == 0)
 			{
+
+				cur_poke.xp += 5;
+				printf("Vous avez gagné le combat avec le pokémon sauvage!\nVous remportez 5 xp\n")
 				printf("Vous avez capturé le pokémon\nIl est ajouté à votre pokéceinture\n");
 				pokeceinture[nbpokemon] = cap_poke;
+				nbpokemon++;
+			}
+			else if(issue_finale == 1)
+			{
+				printf("Vous n'avez pas pu capturer le pokémon\n");
 			}
 			else
 			{
@@ -98,11 +105,39 @@ int main(int arcg, char **argv)
 			for(int x = 0; x < nbpokemon; x++){
 				char *bufferpoke = (char*)malloc(512*sizeof(char));
 				serialize_pokemon(pokeceinture[x], &bufferpoke);
-				printf("Pokéball n°%d : %s\n");
+				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
 				free(bufferpoke);
 			}
 		}
-		else if(selecteur == 8)
+		else if(selecteur == 5)
+		{
+			int nbsup;
+			printf("Contenu de votre pokéceinture : \n");
+			for(int x = 0; x < nbpokemon; x++){
+				char *bufferpoke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(pokeceinture[x], &bufferpoke);
+				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
+				free(bufferpoke);
+			}
+
+			printf("Supprimer le pokémon n°:\n");
+			scanf("%d", &nbsup);
+			if(nbsup >= 1 && nbsup < 5)
+			{
+				for(int j = nbsup-1; j < 5; j++){
+					pokeceinture[j] = pokeceinture[j+1];
+				}
+				pokemon pokenull;
+				pokeceinture[5] = pokenull;
+				nbpokemon --;
+			}
+			else
+			{
+				printf("Mauvais numéro de pokéball");
+			}
+
+		}
+		else if(selecteur == 4)
 		{
 			poke_dump(cur_poke);
 		}

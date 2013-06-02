@@ -9,6 +9,6 @@
 #include "../Core/generator.h"
 #include "../Core/pokemon.h"
 
-void chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, char *nom, pokemon cur_poke, pokemon *rec_poke);
+int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, char *nom, pokemon cur_poke, pokemon *rec_poke);
 
 #endif
