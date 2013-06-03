@@ -43,6 +43,6 @@ void serialize_pokemon(pokemon pkm, char **output)
 
 void poke_dump(pokemon pkm)
 {
-	printf("Pokémon actuel : \nID : %d\nEspèce : %d\nVie : %d\nVie max : %d\nExperience : %d\nRapidité : %d\n", 
+	printf("\nID : %d\nEspèce : %d\nVie : %d\nVie max : %d\nExperience : %d\nRapidité : %d\n", 
 		pkm.id, pkm.spec,pkm.hp, pkm.hpmax, pkm.xp, pkm.speed);
 }

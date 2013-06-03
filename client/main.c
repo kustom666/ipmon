@@ -9,6 +9,12 @@
 int main(int arcg, char **argv)
 {	
 	winsock_init();
+
+	if(argv[1] == NULL)
+	{
+		printf("Vous devez spécifier une addresse serveur en lançant le programme.\nExemple : ./client bytechain.com\n");
+		exit(1);
+	}
 	SOCKADDR_IN listen = setup_addr();
 	
 
@@ -50,10 +56,29 @@ int main(int arcg, char **argv)
    	printf("Bienvenue, je suis le prof Ken. Prépare toi à vivre des aventures hallucinogènantes!\nMais d'abord, quel est ton nom?\n");
 	scanf("%s", nom);
 
+	char *out = (char*)malloc(1024*sizeof(char));
+	len_pack = generate_packet(2, &pack, &head, TAG_NOUV, &out, nom);
+	if(len_pack != 0)
+	{
+		char *recv = (char*)malloc(1024*sizeof(char));
+		sendto(sock, out, len_pack, 0, (SOCKADDR *)&to, sizeof(to));
+		int n = recvfrom(sock, recv, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+		if ( n  < 0)
+		{
+			perror("Erreur de réception");
+			exit(1);
+		}
+		unserialize_pokemon(recv, &cur_poke);
+		printf("La forêt t'envoie un nouveau pokémon d'espèce : %d\n", cur_poke.spec);
+		free(recv);
+
+	}
+	free(out);
+
 	do{
 
 		printf("Salutation %s!\nQue veux tu faire?\n", nom);
-		printf("1- Nouveau pokémon\n2- Duel la forêt\n3- Afficher la pokéceinture \n4- Afficher les stats de ton pokémon actuel\n5- Jeter un pokémon\n9- Quitter\n");
+		printf("1- Duel la forêt\n2- Afficher la pokéceinture \n3- Afficher les stats de ton pokémon actuel\n4- Choisir le pokémon courant\n5- Jeter un pokémon\n6- Démarrer un serveur de troc\n7- Lancer un troc (serveur démarré chez l'autre)\n9- Quitter\n");
 		scanf("%d", &selecteur);
 		char *recv_buffer = (char*)malloc(1024*sizeof(char));
 		char *send_buffer = (char*)malloc(1024*sizeof(char));
@@ -63,29 +88,12 @@ int main(int arcg, char **argv)
 
 		if(selecteur == 1)
 		{
-			len_pack = generate_packet(2, &pack, &head, TAG_NOUV, &output, nom);
-			if(len_pack != 0)
-			{
-				sendto(sock, output, len_pack, 0, (SOCKADDR *)&to, sizeof(to));
-				int n = recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
-				if ( n  < 0)
-				{
-					perror("Erreur de réception");
-					exit(1);
-				}
-				unserialize_pokemon(recv_buffer, &cur_poke);
-				printf("La forêt t'envoie un nouveau pokémon d'espèce : %d\n", cur_poke.spec);
-
-			}
-		}
-		else if(selecteur == 2)
-		{
 			int issue_finale = chandle_duel(sock, (SOCKADDR *)&to, sizeof(to), nom, cur_poke, &cap_poke);
 			if(nbpokemon < 6 && issue_finale == 0)
 			{
 
 				cur_poke.xp += 5;
-				printf("Vous avez gagné le combat avec le pokémon sauvage!\nVous remportez 5 xp\n")
+				printf("Vous avez gagné le combat avec le pokémon sauvage!\nVous remportez 5 xp\n");
 				printf("Vous avez capturé le pokémon\nIl est ajouté à votre pokéceinture\n");
 				pokeceinture[nbpokemon] = cap_poke;
 				nbpokemon++;
@@ -99,7 +107,7 @@ int main(int arcg, char **argv)
 				printf("Votre pokéceinture est pleine. Le pokémon sauvage ne peut pas être capturé!\n");
 			}
 		}
-		else if(selecteur == 3)
+		else if(selecteur == 2)
 		{
 			printf("Contenu de votre pokéceinture : \n");
 			for(int x = 0; x < nbpokemon; x++){
@@ -108,6 +116,35 @@ int main(int arcg, char **argv)
 				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
 				free(bufferpoke);
 			}
+		}
+		else if(selecteur == 3)
+		{
+			poke_dump(cur_poke);
+		}
+		else if(selecteur == 4)
+		{
+			int ech;
+			printf("Echanger le pokémon courant contre quel pokémon?\n");
+			printf("Contenu de votre pokéceinture : \n");
+			for(int x = 0; x < nbpokemon; x++){
+				char *bufferpoke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(pokeceinture[x], &bufferpoke);
+				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
+				free(bufferpoke);
+			}
+			scanf("%d", &ech);
+			if(ech >= 1 && ech <= 6)
+			{
+				printf("Echange du pokémon courant contre le pokémon n°%d\n", ech);
+				pokemon pokebuff = cur_poke;
+				cur_poke = pokeceinture[ech-1];
+				pokeceinture[ech-1] = pokebuff;
+			}
+			else
+			{
+				printf("Mauvais numéro de pokémon!\n");
+			}
+
 		}
 		else if(selecteur == 5)
 		{
@@ -122,11 +159,17 @@ int main(int arcg, char **argv)
 
 			printf("Supprimer le pokémon n°:\n");
 			scanf("%d", &nbsup);
-			if(nbsup >= 1 && nbsup < 5)
+			if(nbsup >= 1 && nbsup < 6)
 			{
 				for(int j = nbsup-1; j < 5; j++){
 					pokeceinture[j] = pokeceinture[j+1];
 				}
+				pokemon pokenull;
+				pokeceinture[5] = pokenull;
+				nbpokemon --;
+			}
+			else if(nbsup == 6)
+			{
 				pokemon pokenull;
 				pokeceinture[5] = pokenull;
 				nbpokemon --;
@@ -137,10 +180,54 @@ int main(int arcg, char **argv)
 			}
 
 		}
-		else if(selecteur == 4)
+		else if(selecteur ==6)
 		{
-			poke_dump(cur_poke);
+			printf("Quel pokémon voulez vous échanger?\n");
+			int nbech;
+			printf("Contenu de votre pokéceinture : \n");
+			for(int x = 0; x < nbpokemon; x++){
+				char *bufferpoke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(pokeceinture[x], &bufferpoke);
+				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
+				free(bufferpoke);
+			}
+			scanf("%d", &nbech);
+			if(nbech >= 1 && nbech < 6)
+			{
+				pokemon poke_env = pokeceinture[nbech];
+				int ret = chandle_troc_toserver(sock, &poke_env);
+				if(ret == 0)
+				{
+					pokeceinture[nbech] = poke_env;
+				}
+			}
 		}
+		else if(selecteur == 7)
+		{
+			printf("Quel pokémon voulez vous échanger?\n");
+			int nbech;
+			printf("Contenu de votre pokéceinture : \n");
+			for(int x = 0; x < nbpokemon; x++){
+				char *bufferpoke = (char*)malloc(512*sizeof(char));
+				serialize_pokemon(pokeceinture[x], &bufferpoke);
+				printf("Pokéball n°%d : %s\n", x+1, bufferpoke);
+				free(bufferpoke);
+			}
+			scanf("%d", &nbech);
+			if(nbech >= 1 && nbech < 6)
+			{
+				char ip_dresseur[128];
+				printf("Quel est l'ip du dresseur avec qui échanger le pokémon?\n");
+				scanf("%s", ip_dresseur);
+				pokemon poke_env = pokeceinture[nbech];
+				int ret = chandle_troc(sock, ip_dresseur, &poke_env);
+				if(ret == 0)
+				{
+					pokeceinture[nbech] = poke_env;
+				}
+			}
+		}
+
 		/*memset(recv_buffer,0,1024);
 		memset(multiple, 0, 1024);
 		memset(output, 0, 512);*/

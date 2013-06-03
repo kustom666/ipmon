@@ -119,6 +119,9 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 					adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
 					for_hp_loss = delta_for > 0 ? delta_for : 1;
 
+					for_hp_loss += rand() % 4;
+					adv_hp_loss += rand() % 4;
+
 					printf("Le pokémon ennemi à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss);
 					
 					rand_poke.hp -= for_hp_loss;
@@ -182,6 +185,9 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 				adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
 				for_hp_loss = delta_for > 0 ? delta_for : 1;
 
+				for_hp_loss += rand() % 4;
+				adv_hp_loss += rand() % 4;
+		
 				rand_poke.hp -= for_hp_loss;
 				printf("Le pokémon ennemi à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp et tombe à %d HP\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss, rand_poke.hp);
 
@@ -235,11 +241,13 @@ void handle_duel(SOCKET sock, char *buffer, const struct sockaddr *dest_addr, in
 				}
 				free(dataresp);
 				free(serialized_poke);
+				free(recv_buffer);
 			}while(combat != 1);
+			
 		}
 	}
 
-	
+	free(backup_poke);
 	free(buff_send);
 	free(prepsend);
 	free(storage);

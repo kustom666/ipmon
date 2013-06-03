@@ -1,7 +1,94 @@
 #include "chandler.h"
 
+int chandle_troc(SOCKET sock, char *ip_dresseur, pokemon *poke_env)
+{
+	char *output = (char*)malloc(1024*sizeof(char));
+	SOCKADDR_IN to = {0};
+	int retvalue;
+	int tosize = sizeof to;
+	struct hostent *hostinfo = NULL;
+	hostinfo = gethostbyname(ip_dresseur);
+
+	if(hostinfo == NULL)
+	{
+		fprintf(stderr, "Host inconnu : %s\n", ip_dresseur);
+		exit(1);
+	}
+
+	to.sin_addr = *(IN_ADDR *) hostinfo->h_addr;
+	to.sin_port = htons(trade_port);
+	to.sin_family = AF_INET;
+	printf("Connexion au dresseur : %s\n", ip_dresseur);
+	sprintf(output, "inittroc");
+	sendto(sock, output, 8, 0, (SOCKADDR *)&to, sizeof(to));
+	memset(output,0,1024);
+	recvfrom(sock,output, 1024*sizeof(char), 0, (SOCKADDR *)&to, &tosize);
+	if(strcmp(output, "oktroc") == 0)
+	{
+		printf("Le dresseur est prêt à échanger, envoi du pokémon!\n");
+		memset(output, 0,1024);
+		serialize_pokemon(*poke_env, &output);
+		sendto(sock, output, strlen(output), 0, (SOCKADDR *)&to, sizeof(to));
+		printf("Pokémon envoyé, en attente du pokémon à recevoir\n");
+		memset(output, 0,1024);
+		recvfrom(sock,output, 1024*sizeof(char), 0, (SOCKADDR *)&to, &tosize);
+		printf("Vous venez d'échanger votre pokémon contre celui ci : %s", output);
+		unserialize_pokemon(output, poke_env);		
+		retvalue = 0;
+	}
+	else
+	{
+		printf("Le dresseur n'est pas prêt, demandez lui de se mettre en mode \"accepter les trocs\", et relancez le troc\n");
+		retvalue = 1;
+	}
+
+	free(output);
+	return retvalue;
+}
+
+int chandle_troc_toserver(SOCKET sock, pokemon *poke_env)
+{
+	char *output = (char*)malloc(1024*sizeof(char));
+	char *backup_poke = (char*)malloc(1024*sizeof(char));
+	SOCKADDR_IN from = {0};
+	int retvalue;
+	int fromsize = sizeof from;
+
+	printf("En attente du signal de début du troc\n");
+	recvfrom(sock,output, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+	if(strcmp(output, "inittroc") == 0)
+	{
+		memset(output, 0,1024);
+		printf("Initialisation du troc, envoi du signal de départ\n");
+		sprintf(output, "oktroc");
+		sendto(sock, output, 6, 0, (SOCKADDR *)&from, sizeof(from));
+		memset(output, 0,1024);
+		printf("En attente du pokémon à recevoir\n");
+		recvfrom(sock,output, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
+		printf("Pokémon reçu : %s",output);
+		sprintf(backup_poke, "%s", output);
+		memset(output,0,1024);
+		serialize_pokemon(*poke_env, &output);
+		printf("Envoi de notre pokémon : %s\n", output);
+		sendto(sock, output, strlen(output), 0, (SOCKADDR *)&from, sizeof(from));
+		printf("Vous venez d'échanger votre pokémon!\n");
+		unserialize_pokemon(backup_poke, poke_env);
+		retvalue = 0;
+	}	
+	else
+	{
+		printf("Mauvais packet, abandon!\n");
+		retvalue = 1;
+	}
+
+	free(backup_poke);
+	free(output);
+	return retvalue;
+}
+
 int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, char *nom, pokemon cur_poke, pokemon *rec_poke)
 {
+	srand (time(NULL));
 	pokepacket pack;
 	pokeheader head;
 	int len_pack, issue_finale;
@@ -62,6 +149,9 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 				adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
 				for_hp_loss = delta_for > 0 ? delta_for : 1;
 
+				for_hp_loss += rand() % 4;
+				adv_hp_loss += rand() % 4;
+
 				cur_poke.hp -= for_hp_loss;
 				printf("Le pokémon ennemi à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp et tombe à %d HP\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss, cur_poke.hp);
 
@@ -77,6 +167,7 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 				memset(recv_buffer,0,1024);
 				memset(send_buffer, 0,1024);
 				len_pack = generate_packet(12, &pack, &head, TAG_ISSU, &send_buffer, dataresp);
+				free(dataresp);
 				sendto(sock, send_buffer, len_pack, 0, dest_addr, dest_len);
 
 				printf("On envoie l'issue : %s\n", send_buffer);
@@ -111,6 +202,9 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 					recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 					//On l'enregistre
 					unserialize_pokemon(recv_buffer, rec_poke);
+					printf("Pokémon capturé : %s\n", recv_buffer);
+					poke_dump(*rec_poke);
+					fflush(stdout);
 					issue_finale = 0;
 					combat = 1;
 				}
@@ -118,7 +212,6 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 				{	
 					cur_poke.hp -= atoi(hp_loss);
 				}
-				free(dataresp);
 				free(serialized_poke);
 			}while(combat != 1);
 			
@@ -153,6 +246,9 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 					recvfrom(sock, recv_buffer, 1024*sizeof(char), 0, (SOCKADDR *)&from, &fromsize);
 					//On l'enregistre
 					unserialize_pokemon(recv_buffer, rec_poke);
+					printf("Pokémon capturé : %s \n", recv_buffer);
+					poke_dump(*rec_poke);
+					fflush(stdout);
 					issue_finale = 0;
 					cont = 1;
 				}
@@ -184,6 +280,10 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 					adv_hp_loss = delta_adv > 0 ? delta_adv : 1;
 					for_hp_loss = delta_for > 0 ? delta_for : 1;
 
+					//On ajoute une composante aléatoire (c'est très efficace!)
+					for_hp_loss += rand() % 4;
+					adv_hp_loss += rand() % 4;
+
 					printf("Le pokémon sauvage à attaqué avec une force de %d Il perd %d hp\nNotre pokémon à riposté avec une force de : %d Il perd %d hp\n", adv_atkp, adv_hp_loss, for_atkp, for_hp_loss);
 					
 					cur_poke.hp -= for_hp_loss;
@@ -195,6 +295,7 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 
 					printf("Issue de l'attaque : %s\n", dataresp);
 					len_pack = generate_packet(12, &pack, &head, TAG_ISSU, &send_buffer, dataresp);
+					free(dataresp);
 					sendto(sock, send_buffer, len_pack, 0, dest_addr, dest_len);
 
 					if(strcmp(new_issue, "KO") == 0)
@@ -218,7 +319,7 @@ int chandle_duel(SOCKET sock, const struct sockaddr *dest_addr, int dest_len, ch
 			printf("Le combat est terminé!\n");
 		}
 	}
-
+	return issue_finale;
 	free(recv_buffer);
 	free(send_buffer);
 	free(multiple);

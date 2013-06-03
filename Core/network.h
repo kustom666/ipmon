@@ -39,6 +39,7 @@ typedef struct in_addr IN_ADDR;
 #include "utility.h"
 // DEFINE du port et de la compatibilité ascendante de h_addr
 #define l_port 1151
+#define trade_port 1337
 #define h_addr  h_addr_list[0]
 
 
